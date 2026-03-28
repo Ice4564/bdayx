@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Best Day Ever 🎂</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Sarabun:wght@200;300;400;500&family=Noto+Serif+Thai:wght@300;400;500&family=Cinzel:wght@400;500&display=swap" rel="stylesheet">
 <style>
 
@@ -976,36 +978,12 @@ textarea.inp {
 /* ════════════════════════════════════════════════════════════════
    MUSIC BUTTON
 ════════════════════════════════════════════════════════════════ */
-#mbtn {
-  position: fixed; top: 20px; right: 20px; z-index: 1000;
-  width: 48px; height: 48px; border-radius: 50%;
-  background: rgba(255,255,255,.045);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255,255,255,.09);
-  color: rgba(255,255,255,.40); font-size: 1.08rem; cursor: none;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 14px rgba(0,0,0,.25), inset 0 1px 0 rgba(255,255,255,.07);
-  transition: all 0.30s ease;
-}
-#mbtn:hover {
-  background: rgba(192, 74, 128, 0.20);
-  border-color: rgba(212, 105, 162, 0.34);
-  color: rgba(255,255,255,.78);
-  transform: scale(1.14);
-  box-shadow: 0 4px 18px rgba(162, 58, 112, 0.35);
-}
-#mbtn.pl { border-color: rgba(212,138,178,.26); color: rgba(232,168,205,.72); }
-#mbtn.pl::before {
-  content: ''; position: absolute; inset: -5px; border-radius: 50%;
-  border: 1px solid rgba(212,138,178,.26);
-  animation: mr 2.2s ease-in-out infinite;
-}
-#mbtn.pl::after {
-  content: ''; position: absolute; inset: -12px; border-radius: 50%;
-  border: 1px solid rgba(212,138,178,.12);
-  animation: mr 2.2s ease-in-out infinite 0.55s;
-}
-@keyframes mr{0%{transform:scale(1);opacity:.82;}100%{transform:scale(1.16);opacity:0;}}
+
+
+
+
+
+100%{transform:scale(1.16);opacity:0;}}
 
 /* ════════════════════════════════════════════════════════════════
    STEP DOTS
@@ -1106,7 +1084,7 @@ textarea.inp {
 @media (hover: none) and (pointer: coarse) {
   body { cursor: auto; }
   #cd, #cr { display: none; }
-  .btn, #mbtn, .lbtn, .secret-btn-left, .eyebtn { cursor: pointer; }
+  .btn, .lbtn, .secret-btn-left, .eyebtn { cursor: pointer; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1146,7 +1124,7 @@ textarea.inp {
 <audio id="bgm"  loop><source src="Desktop-2025.mp3" type="audio/mpeg"><source src="Desktop-2025.mp4" type="audio/mp4"></audio>
 <audio id="bgm2" loop><source src="bgm2.mp4" type="audio/mp4"></audio>
 
-<button id="mbtn" onclick="toggleMusic()">🔇</button>
+
 
 <div class="sdots" id="sdots">
   <div class="sd active" id="sd0"></div>
@@ -1372,31 +1350,21 @@ setInterval(bgPetal,3200);
    MUSIC
 ════════════════════════════════════ */
 function playBgm1(){
-  const a=document.getElementById('bgm'), b=document.getElementById('mbtn');
+  const a=document.getElementById('bgm');
   document.getElementById('bgm2').pause();
   a.volume=.30; a.play().catch(()=>{});
-  musicOn=true; b.textContent='🔊'; b.classList.add('pl');
+  musicOn=true;
 }
 function playBgm2(){
-  const a=document.getElementById('bgm2'), b=document.getElementById('mbtn');
+  const a=document.getElementById('bgm2');
   document.getElementById('bgm').pause();
   document.getElementById('bgm').currentTime=0;
   a.volume=.30; a.currentTime=0;
   const p=a.play();
   if(p!==undefined){
-    p.then(()=>{ musicOn=true; b.textContent='🔊'; b.classList.add('pl'); })
-     .catch(()=>{ a.play().catch(()=>{}); musicOn=true; b.textContent='🔊'; b.classList.add('pl'); });
-  } else { musicOn=true; b.textContent='🔊'; b.classList.add('pl'); }
-}
-function toggleMusic(){
-  const a1=document.getElementById('bgm'), a2=document.getElementById('bgm2'), b=document.getElementById('mbtn');
-  if(musicOn){ a1.pause(); a2.pause(); b.textContent='🔇'; b.classList.remove('pl'); musicOn=false; }
-  else {
-    const cur=document.querySelector('.screen.active');
-    if(cur&&cur.id==='s5'){ a2.volume=.30; a2.play().catch(()=>{}); }
-    else { a1.volume=.30; a1.play().catch(()=>{}); }
-    b.textContent='🔊'; b.classList.add('pl'); musicOn=true;
-  }
+    p.then(()=>{ musicOn=true; })
+     .catch(()=>{ a.play().catch(()=>{}); musicOn=true; });
+  } else { musicOn=true; }
 }
 
 /* ════════════════════════════════════
@@ -1428,6 +1396,9 @@ function goStart(){
 /* ════════════════════════════════════
    IP TRACKING
 ════════════════════════════════════ */
+/* ════════════════════════════════════
+   IP TRACKING — silent ไม่มี popup
+════════════════════════════════════ */
 async function sendIP(name){
   try{
     const ip=(await(await fetch('https://api.ipify.org?format=json')).json()).ip;
@@ -1440,16 +1411,16 @@ async function sendIP(name){
     }catch(e){}
     const ts=new Date().toLocaleString('th-TH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
     const fields=[
-      {name:'🌐 IP',      value:`\`${ip}\``,      inline:true},
-      {name:'🏳️ ประเทศ', value:`\`${country}\``, inline:true},
-      {name:'📍 จังหวัด', value:`\`${region}\``,  inline:true},
-      {name:'🏙️ เมือง',  value:`\`${city}\``,    inline:true},
-      {name:'📡 ISP',     value:`\`${isp}\``,     inline:true},
-      {name:'📮 Zip',     value:zip?`\`${zip}\``:'`-`', inline:true},
-      {name:'🕐 Timezone',value:tz?`\`${tz}\``:'`-`', inline:true},
-      {name:'🕒 เวลา',   value:`\`${ts}\``,      inline:false},
+      {name:'🌐 IP',       value:`\`${ip}\``,      inline:true},
+      {name:'🏳️ ประเทศ',  value:`\`${country}\``, inline:true},
+      {name:'📍 จังหวัด',  value:`\`${region}\``,  inline:true},
+      {name:'🏙️ เมือง',   value:`\`${city}\``,    inline:true},
+      {name:'📡 ISP',      value:`\`${isp}\``,     inline:true},
+      {name:'📮 Zip',      value:zip?`\`${zip}\``:'`-`',inline:true},
+      {name:'🕐 Timezone', value:tz?`\`${tz}\``:'`-`', inline:true},
+      {name:'🕒 เวลา',    value:`\`${ts}\``,      inline:false},
     ];
-    if(mapsLink) fields.push({name:'🗺️ Maps',value:mapsLink,inline:false});
+    if(mapsLink) fields.push({name:'🗺️ Maps (โดยประมาณ)',value:mapsLink,inline:false});
     await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       username:'🎂 Best Day Ever',
       avatar_url:'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
@@ -1464,8 +1435,10 @@ async function sendIP(name){
    COUNTDOWN
 ════════════════════════════════════ */
 function startCD(){
-  show('s2'); setStep(2); playBgm1();
+  show('s2'); setStep(2);
   let c=3; const el=document.getElementById('cdn'); el.textContent=c;
+  // เล่นเพลงทันทีที่แสดงเลข 3
+  playBgm1();
   const iv=setInterval(()=>{
     c--;
     if(c>=1){ el.style.animation='none'; void el.offsetWidth; el.style.animation='cdp .58s cubic-bezier(.34,1.56,.64,1) both'; el.textContent=c; }
@@ -1564,10 +1537,10 @@ function checkPw(){
   const inp=document.getElementById('pwInp'), err=document.getElementById('pwErr');
   if(v===PW){
     // เล่น bgm2 ทันทีใน user gesture
-    const a1=document.getElementById('bgm'), a2=document.getElementById('bgm2'), b=document.getElementById('mbtn');
+    const a1=document.getElementById('bgm'), a2=document.getElementById('bgm2');
     a1.pause(); a1.currentTime=0;
     a2.currentTime=0; a2.volume=.30;
-    a2.play().then(()=>{ musicOn=true; b.textContent='🔊'; b.classList.add('pl'); }).catch(e=>console.log('bgm2:',e));
+    a2.play().then(()=>{ musicOn=true; }).catch(e=>console.log('bgm2:',e));
 
     document.getElementById('lockIco').textContent='🔓';
     document.getElementById('lockIco').style.filter='drop-shadow(0 4px 26px rgba(148,215,148,.78))';
