@@ -849,40 +849,6 @@ textarea.inp {
 }
 @keyframes envf{0%,100%{transform:translateY(0) rotate(-2.5deg);}50%{transform:translateY(-7px) rotate(2.5deg);}}
 
-/* ════════════════════════════════════════════════════════════════
-   SECRET BUTTON (bottom-left)
-════════════════════════════════════════════════════════════════ */
-.secret-btn-left {
-  position: fixed; bottom: 18px; left: 20px; z-index: 1000;
-  width: 48px; height: 48px; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,.09);
-  background: rgba(255,255,255,.04);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-  font-size: 1.12rem; cursor: none;
-  display: flex; align-items: center; justify-content: center;
-  color: rgba(255,255,255,.40);
-  box-shadow: 0 2px 14px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
-  transition: all 0.30s ease;
-}
-.secret-btn-left::before {
-  content: ''; position: absolute; inset: -5px; border-radius: 50%;
-  border: 1px solid rgba(200, 85, 138, 0.20);
-  animation: sbp 3.0s ease-in-out infinite;
-}
-.secret-btn-left::after {
-  content: ''; position: absolute; inset: -12px; border-radius: 50%;
-  border: 1px solid rgba(200, 85, 138, 0.09);
-  animation: sbp 3.0s ease-in-out infinite 0.8s;
-}
-@keyframes sbp{0%,100%{transform:scale(1);opacity:.82;}50%{transform:scale(1.09);opacity:.20;}}
-.secret-btn-left:hover {
-  background: rgba(198, 76, 132, 0.22);
-  border-color: rgba(220, 108, 168, 0.38);
-  transform: scale(1.14) rotate(10deg);
-  box-shadow: 0 4px 22px rgba(198, 76, 132, 0.40), 0 0 36px rgba(198, 76, 132, 0.18);
-  color: rgba(255,255,255,.82);
-}
-.secret-btn-left:active { transform: scale(0.90) rotate(0deg); }
 
 /* ════════════════════════════════════════════════════════════════
    PASSWORD SCREEN (S5)
@@ -1055,8 +1021,638 @@ textarea.inp {
 .credit a:hover { color: rgba(228,148,192,.92); }
 
 /* ════════════════════════════════════════════════════════════════
-   RESPONSIVE
+   BOTTOM LEFT BUTTON GROUP (🔒 + ✦)
 ════════════════════════════════════════════════════════════════ */
+.btn-group-bl {
+  position: fixed; bottom: 18px; left: 18px; z-index: 1000;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+
+/* shared — ทั้ง 2 ปุ่มเหมือนกันทุกอย่าง ยกเว้นสี */
+.secret-btn-left,
+.me-btn {
+  width: 46px !important;
+  height: 46px !important;
+  min-width: 46px !important;
+  min-height: 46px !important;
+  border-radius: 50% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 2px 14px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.07);
+  transition: all .30s ease;
+  position: relative;
+  cursor: none;
+  font-size: 1.08rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+/* 🔒 rose */
+.secret-btn-left {
+  border: 1px solid rgba(200,85,138,.22);
+  background: rgba(200,85,138,.06);
+  color: rgba(255,255,255,.45);
+}
+.secret-btn-left::before {
+  content:''; position:absolute; inset:-5px; border-radius:50%;
+  border:1px solid rgba(200,85,138,.20); animation:sbp 3.0s ease-in-out infinite;
+}
+.secret-btn-left::after {
+  content:''; position:absolute; inset:-12px; border-radius:50%;
+  border:1px solid rgba(200,85,138,.09); animation:sbp 3.0s ease-in-out infinite .8s;
+}
+.secret-btn-left:hover {
+  background: rgba(198,76,132,.22); border-color: rgba(220,108,168,.40);
+  transform: scale(1.12) rotate(10deg);
+  box-shadow: 0 4px 22px rgba(198,76,132,.40), 0 0 36px rgba(198,76,132,.18);
+  color: rgba(255,255,255,.85);
+}
+.secret-btn-left:active { transform: scale(.90) rotate(0deg); }
+
+/* ✦ gold */
+.me-btn {
+  border: 1px solid rgba(220,185,105,.22);
+  background: rgba(220,185,105,.06);
+  color: rgba(220,185,105,.75);
+}
+.me-btn::before {
+  content:''; position:absolute; inset:-5px; border-radius:50%;
+  border:1px solid rgba(220,185,105,.18); animation:sbp 3.2s ease-in-out infinite;
+}
+.me-btn::after {
+  content:''; position:absolute; inset:-12px; border-radius:50%;
+  border:1px solid rgba(220,185,105,.08); animation:sbp 3.2s ease-in-out infinite .8s;
+}
+.me-btn:hover {
+  background: rgba(220,185,105,.18); border-color: rgba(235,200,118,.52);
+  transform: scale(1.12);
+  box-shadow: 0 4px 22px rgba(220,185,105,.38), 0 0 36px rgba(220,185,105,.16);
+  color: rgba(240,210,120,.98);
+}
+.me-btn:active { transform: scale(.90); }
+@keyframes sbp{0%,100%{transform:scale(1);opacity:.82;}50%{transform:scale(1.09);opacity:.20;}}
+
+/* ════════════════════════════════════════════════════════════════
+   PROFILE SCREEN (S6) — beautiful redesign
+════════════════════════════════════════════════════════════════ */
+#s6 .card {
+  max-width: 420px; padding: 0;
+  overflow: hidden; overflow-y: auto; max-height: 92vh;
+  scrollbar-width: thin; scrollbar-color: rgba(200,90,140,.18) transparent;
+  border: 1px solid rgba(220,185,105,.18) !important;
+}
+#s6 .card::-webkit-scrollbar { width: 3px; }
+#s6 .card::-webkit-scrollbar-thumb { background: rgba(200,90,140,.18); border-radius: var(--r-full); }
+
+/* ── Banner with parallax feel ── */
+.prof-banner {
+  position: relative; width: 100%; height: 160px; overflow: hidden; flex-shrink: 0;
+}
+.prof-banner-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(22px) brightness(.35) saturate(1.6); transform: scale(1.14);
+  animation: bannerDrift 12s ease-in-out infinite alternate;
+}
+@keyframes bannerDrift {
+  from { transform: scale(1.14) translateX(-2%); }
+  to   { transform: scale(1.18) translateX(2%);  }
+}
+/* Gradient overlay */
+.prof-banner-grad {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 120% 80% at 30% 40%, rgba(200,80,140,.20) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(8,2,18,.05) 0%, rgba(8,2,18,.88) 100%);
+}
+/* Shimmer particles on banner */
+.prof-banner-shimmer {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.prof-spark {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: sparkFloat var(--sf) ease-in-out infinite alternate;
+}
+@keyframes sparkFloat {
+  from { transform: translate(0,0) scale(.8); opacity: .4; }
+  to   { transform: translate(var(--sx),var(--sy)) scale(1.2); opacity: .9; }
+}
+
+/* Back button */
+.prof-back {
+  position: absolute; top: 12px; left: 12px; z-index: 10;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.15); background: rgba(8,2,18,.50);
+  backdrop-filter: blur(14px); color: rgba(255,255,255,.68); font-size: .78rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: none; transition: all .25s ease;
+}
+.prof-back:hover { background: rgba(255,255,255,.14); color: var(--c-white-95); transform: scale(1.10); }
+
+/* Music pill */
+.prof-music-bar {
+  position: absolute; bottom: 12px; right: 12px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(8,2,18,.62); backdrop-filter: blur(16px);
+  border: 1px solid rgba(220,185,105,.18); border-radius: var(--r-full);
+  padding: .28rem .75rem; cursor: none; transition: all .28s ease;
+  box-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+.prof-music-bar:hover { background: rgba(220,185,105,.14); border-color: rgba(220,185,105,.35); }
+.prof-music-icon { font-size: .80rem; animation: pulse 2s ease-in-out infinite; }
+.prof-music-text {
+  font-size: .56rem; font-weight: 300; color: rgba(255,255,255,.52);
+  letter-spacing: .04em; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.prof-music-eq { display: flex; align-items: flex-end; gap: 2px; height: 11px; }
+.prof-music-eq span {
+  display: block; width: 2px; border-radius: 1px;
+  background: linear-gradient(180deg, rgba(240,210,120,.9), rgba(220,170,80,.6));
+  animation: eq var(--eq-d) ease-in-out infinite alternate;
+}
+.prof-music-eq span:nth-child(1){height:4px;--eq-d:.48s;}
+.prof-music-eq span:nth-child(2){height:9px;--eq-d:.68s;}
+.prof-music-eq span:nth-child(3){height:6px;--eq-d:.38s;}
+.prof-music-eq span:nth-child(4){height:11px;--eq-d:.58s;}
+.prof-music-eq span:nth-child(5){height:3px;--eq-d:.78s;}
+@keyframes eq { from{transform:scaleY(.25);}to{transform:scaleY(1);} }
+.prof-music-bar.paused .prof-music-eq span { animation-play-state: paused; opacity: .4; }
+
+/* ── Info Row: avatar left + text right ── */
+.prof-info-row {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 0 18px; margin-top: -40px;
+  position: relative; z-index: 2;
+  animation: fup .7s var(--e-smooth) .1s both;
+}
+/* Avatar */
+.prof-av {
+  width: 80px; height: 80px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(220,185,105,.60);
+  box-shadow:
+    0 0 0 4px rgba(8,2,18,.92),
+    0 8px 28px rgba(0,0,0,.65),
+    var(--sh-glow-gold);
+  overflow: hidden; background: rgba(20,8,35,.9);
+  transition: box-shadow .35s ease, transform .35s var(--e-spring);
+}
+.prof-av:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 4px rgba(8,2,18,.92), 0 12px 36px rgba(0,0,0,.75), 0 0 50px rgba(220,185,105,.45);
+}
+.prof-av img { width:100%;height:100%;object-fit:cover;display:block; }
+.prof-av-ph {
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:2.2rem;background:radial-gradient(circle,rgba(50,15,55,.9),rgba(20,6,35,.95));
+}
+/* Text */
+.prof-text { flex: 1; padding-top: 44px; }
+.prof-name {
+  font-family: var(--f-display); font-size: 1.55rem; font-weight: 300;
+  color: rgba(242,215,232,.92); letter-spacing: -.2px; line-height: 1.14;
+  margin-bottom: .12rem;
+}
+.prof-handle {
+  font-size: .60rem; font-weight: 200;
+  color: rgba(220,185,105,.65); letter-spacing: .26em;
+}
+
+/* ── Stat row ── */
+.prof-stats {
+  display: flex; gap: 0; margin: 14px 18px 0;
+  background: rgba(255,255,255,.03);
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: var(--r-md); overflow: hidden;
+  animation: fup .7s var(--e-smooth) .2s both;
+}
+.prof-stat {
+  flex: 1; text-align: center; padding: .65rem .5rem;
+  position: relative; transition: background .25s ease;
+}
+.prof-stat:hover { background: rgba(255,255,255,.04); }
+.prof-stat + .prof-stat::before {
+  content: ''; position: absolute; left: 0; top: 20%; bottom: 20%;
+  width: 1px; background: rgba(255,255,255,.07);
+}
+.prof-stat-num {
+  font-family: var(--f-display); font-size: 1.3rem; font-weight: 300;
+  color: rgba(240,210,228,.88); line-height: 1; margin-bottom: .12rem;
+  background: linear-gradient(135deg, rgba(245,215,235,.92), rgba(220,180,205,.75));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.prof-stat-lbl {
+  font-size: .55rem; font-weight: 200; color: rgba(255,255,255,.30);
+  letter-spacing: .18em; text-transform: uppercase;
+}
+
+/* ── Bio ── */
+.prof-bio-wrap {
+  padding: 12px 18px 0;
+  animation: fup .7s var(--e-smooth) .3s both;
+}
+.prof-bio {
+  font-family: var(--f-thai); font-size: .80rem; font-weight: 300;
+  color: rgba(255,255,255,.40); line-height: 1.75; text-align: left;
+  padding: .8rem 1rem; border-radius: var(--r-md);
+  background: rgba(255,255,255,.025);
+  border: 1px solid rgba(255,255,255,.06);
+  position: relative;
+}
+.prof-bio::before {
+  content: '❝'; position: absolute; top: 4px; left: 8px;
+  font-size: .9rem; color: rgba(220,185,105,.25);
+  font-family: Georgia, serif; line-height: 1;
+}
+
+/* ── Social row ── */
+.prof-socials {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 12px 18px 0;
+  animation: fup .7s var(--e-smooth) .4s both;
+}
+.soc-link {
+  display: flex; align-items: center; gap: 5px;
+  padding: .42rem .88rem; border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.04); backdrop-filter: blur(10px);
+  text-decoration: none; font-size: .64rem; font-weight: 300;
+  color: rgba(255,255,255,.52); letter-spacing: .04em;
+  transition: all .28s ease; cursor: none; white-space: nowrap;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+}
+.soc-link:hover { transform: translateY(-2.5px); color: var(--c-white-95); }
+.soc-link.fb:hover { border-color: rgba(66,103,178,.58); background: rgba(66,103,178,.14); box-shadow: 0 5px 18px rgba(66,103,178,.25); }
+.soc-link.ig:hover {
+  border-color: rgba(225,80,100,.45);
+  background: linear-gradient(135deg,rgba(64,93,230,.10),rgba(225,48,108,.10),rgba(253,114,45,.10));
+  box-shadow: 0 5px 18px rgba(200,60,110,.22);
+}
+.soc-link.tt:hover { border-color: rgba(255,255,255,.30); background: rgba(0,0,0,.30); box-shadow: 0 5px 18px rgba(0,0,0,.32); }
+.soc-icon { font-size: .88rem; flex-shrink: 0; }
+
+/* ── Separator ── */
+.prof-sep {
+  display: flex; align-items: center; gap: 10px;
+  margin: 16px 18px 0;
+  animation: fup .7s var(--e-smooth) .5s both;
+}
+.prof-sep::before,.prof-sep::after{content:'';flex:1;height:1px;}
+.prof-sep::before { background: linear-gradient(90deg,transparent,rgba(220,185,105,.24)); }
+.prof-sep::after  { background: linear-gradient(270deg,transparent,rgba(220,185,105,.24)); }
+.prof-sep span { font-size:.50rem; color:rgba(220,185,105,.42); }
+
+/* ── 4-Photo Grid ── */
+.prof-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  padding: 14px 18px 22px;
+  animation: fup .7s var(--e-smooth) .6s both;
+}
+.prof-grid-item {
+  position: relative; aspect-ratio: 1;
+  border-radius: 16px; overflow: hidden;
+  background: rgba(20,8,35,.6);
+  cursor: none;
+  border: 1px solid rgba(255,255,255,.06);
+  transition: transform .38s var(--e-spring), box-shadow .38s ease, border-color .38s ease;
+}
+.prof-grid-item:hover {
+  transform: scale(1.04) translateY(-2px);
+  box-shadow: 0 12px 30px rgba(0,0,0,.55), 0 0 0 1px rgba(220,185,105,.22);
+  border-color: rgba(220,185,105,.20);
+  z-index: 1;
+}
+.prof-grid-item img {
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter: brightness(.85) saturate(1.15);
+  transition: transform .48s ease, filter .48s ease;
+}
+.prof-grid-item:hover img { transform: scale(1.08); filter: brightness(1.0) saturate(1.35); }
+/* Top-left shimmer */
+.prof-grid-item::before {
+  content:'';position:absolute;inset:0;
+  background: linear-gradient(145deg, rgba(255,255,255,.06) 0%, transparent 50%);
+  z-index:1;pointer-events:none;
+}
+/* Bottom gradient */
+.prof-grid-item::after {
+  content:'';position:absolute;bottom:0;left:0;right:0;height:40%;
+  background: linear-gradient(0deg, rgba(8,2,18,.55) 0%, transparent 100%);
+  z-index:1;pointer-events:none;
+  border-radius: 0 0 16px 16px;
+}
+.prof-grid-ph {
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;color:rgba(255,255,255,.12);
+  background:radial-gradient(circle,rgba(55,18,52,.8),rgba(18,5,32,.92));
+}
+
+@media(hover:none) and (pointer:coarse){
+  .me-btn,.soc-link,.prof-back,.prof-music-bar,.prof-grid-item,.prof-av{cursor:pointer;}
+}
+
+/* ── Banner top ── */
+.prof-banner {
+  position: relative; width: 100%; height: 130px; overflow: hidden; flex-shrink: 0;
+}
+.prof-banner-bg {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  filter: blur(20px) brightness(.38) saturate(1.5); transform: scale(1.12);
+}
+.prof-banner-grad {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(8,2,18,.10) 0%,
+    rgba(8,2,18,.80) 100%
+  );
+}
+/* Back btn on banner */
+.prof-back {
+  position: absolute; top: 12px; left: 12px; z-index: 10;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.14); background: rgba(8,2,18,.50);
+  backdrop-filter: blur(12px); color: rgba(255,255,255,.65); font-size: .80rem;
+  display: flex; align-items: center; justify-content: center;
+  cursor: none; transition: all .25s ease;
+}
+.prof-back:hover { background: rgba(255,255,255,.14); color: rgba(255,255,255,.92); transform: scale(1.08); }
+
+/* Music pill on banner */
+.prof-music-bar {
+  position: absolute; bottom: 10px; right: 12px;
+  display: flex; align-items: center; gap: 5px;
+  background: rgba(8,2,18,.60); backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,.09); border-radius: var(--r-full);
+  padding: .24rem .68rem; cursor: none; transition: all .28s ease;
+}
+.prof-music-bar:hover { background: rgba(220,185,105,.14); border-color: rgba(220,185,105,.28); }
+.prof-music-icon { font-size: .78rem; }
+.prof-music-text {
+  font-size: .55rem; font-weight: 300; color: rgba(255,255,255,.48);
+  letter-spacing: .04em; max-width: 90px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.prof-music-eq { display: flex; align-items: flex-end; gap: 2px; height: 10px; }
+.prof-music-eq span {
+  display: block; width: 2px; border-radius: 1px; background: rgba(220,185,105,.72);
+  animation: eq var(--eq-d) ease-in-out infinite alternate;
+}
+.prof-music-eq span:nth-child(1){height:4px;--eq-d:.48s;}
+.prof-music-eq span:nth-child(2){height:9px;--eq-d:.68s;}
+.prof-music-eq span:nth-child(3){height:6px;--eq-d:.38s;}
+.prof-music-eq span:nth-child(4){height:10px;--eq-d:.58s;}
+.prof-music-eq span:nth-child(5){height:3px;--eq-d:.78s;}
+@keyframes eq{from{transform:scaleY(.28);}to{transform:scaleY(1);}}
+.prof-music-bar.paused .prof-music-eq span { animation-play-state: paused; }
+
+/* ── INFO ROW: avatar left + text right ── */
+.prof-info-row {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 0 20px 0 20px;
+  margin-top: -38px; /* overlap banner */
+  position: relative; z-index: 2;
+}
+/* Avatar circle */
+.prof-av {
+  width: 80px; height: 80px; flex-shrink: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(220,185,105,.55);
+  box-shadow: 0 0 0 4px rgba(8,2,18,.90), 0 6px 24px rgba(0,0,0,.60), var(--sh-glow-gold);
+  overflow: hidden; background: rgba(20,8,35,.9);
+}
+.prof-av img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.prof-av-ph {
+  width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+  font-size: 2.2rem; background: radial-gradient(circle, rgba(50,15,55,.9), rgba(20,6,35,.95));
+}
+/* Text col */
+.prof-text { flex: 1; padding-top: 42px; }
+.prof-name {
+  font-family: var(--f-display); font-size: 1.5rem; font-weight: 300;
+  color: rgba(242,215,232,.90); letter-spacing: -.2px; line-height: 1.15; margin-bottom: .12rem;
+}
+.prof-handle { font-size: .60rem; font-weight: 200; color: rgba(220,185,105,.60); letter-spacing: .24em; }
+
+/* ── BIO ── */
+.prof-bio-wrap { padding: 14px 20px 0; }
+.prof-bio {
+  font-family: var(--f-thai); font-size: .80rem; font-weight: 300;
+  color: rgba(255,255,255,.38); line-height: 1.72; text-align: left;
+}
+
+/* ── SOCIAL ROW ── */
+.prof-socials {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 14px 20px 0;
+}
+.soc-link {
+  display: flex; align-items: center; gap: 5px;
+  padding: .42rem .88rem; border-radius: var(--r-full);
+  border: 1px solid rgba(255,255,255,.09);
+  background: rgba(255,255,255,.04); backdrop-filter: blur(10px);
+  text-decoration: none; font-size: .65rem; font-weight: 300;
+  color: rgba(255,255,255,.52); letter-spacing: .04em;
+  transition: all .28s ease; cursor: none; white-space: nowrap;
+}
+.soc-link:hover { transform: translateY(-2px); color: rgba(255,255,255,.88); }
+.soc-link.fb:hover { border-color: rgba(66,103,178,.55); background: rgba(66,103,178,.14); box-shadow: 0 5px 18px rgba(66,103,178,.22); }
+.soc-link.ig:hover { border-color: rgba(225,80,100,.45); background: linear-gradient(135deg,rgba(64,93,230,.10),rgba(225,48,108,.10),rgba(253,114,45,.10)); box-shadow: 0 5px 18px rgba(200,60,110,.20); }
+.soc-link.tt:hover { border-color: rgba(255,255,255,.28); background: rgba(0,0,0,.28); box-shadow: 0 5px 18px rgba(0,0,0,.30); }
+.soc-icon { font-size: .88rem; flex-shrink: 0; }
+
+/* ── DIVIDER ── */
+.prof-sep {
+  display: flex; align-items: center; gap: 10px;
+  margin: 18px 20px 0;
+}
+.prof-sep::before,.prof-sep::after{content:'';flex:1;height:1px;}
+.prof-sep::before{background:linear-gradient(90deg,transparent,rgba(220,185,105,.22));}
+.prof-sep::after {background:linear-gradient(270deg,transparent,rgba(220,185,105,.22));}
+.prof-sep span{font-size:.50rem;color:rgba(220,185,105,.42);}
+
+
+/* Profile header banner */
+.prof-header {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.prof-bg {
+  position: absolute; inset: 0;
+  background: linear-gradient(145deg,rgba(130,28,82,0.85) 0%,rgba(80,15,60,0.90) 40%,rgba(50,8,40,0.95) 100%);
+}
+.prof-bg-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  filter: blur(18px) brightness(.45) saturate(1.4);
+  transform: scale(1.1);
+}
+.prof-bg-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg,rgba(8,2,18,.10) 0%,rgba(8,2,18,.70) 100%);
+}
+
+/* Avatar circle */
+.prof-avatar-wrap {
+  position: absolute;
+  bottom: -44px; left: 50%;
+  transform: translateX(-50%);
+  width: 90px; height: 90px;
+  border-radius: 50%;
+  border: 3px solid rgba(220,185,105,.55);
+  box-shadow: 0 0 0 5px rgba(8,2,18,.88), 0 8px 28px rgba(0,0,0,.65), var(--sh-glow-gold);
+  overflow: hidden;
+  background: rgba(20,8,35,.9);
+  z-index: 2;
+}
+.prof-avatar { width:100%;height:100%;object-fit:cover;display:block; }
+.prof-avatar-placeholder {
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:2.6rem;background:radial-gradient(circle,rgba(50,15,55,.9),rgba(20,6,35,.95));
+}
+
+/* Music bar */
+.prof-music-bar {
+  position: absolute; bottom: 12px; right: 12px;
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(8,2,18,.55); backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.08); border-radius: var(--r-full);
+  padding: .26rem .72rem; cursor: none; transition: all .28s ease;
+}
+.prof-music-bar:hover { background:rgba(220,185,105,.12);border-color:rgba(220,185,105,.25); }
+.prof-music-icon { font-size:.82rem; animation:pulse 1.8s ease-in-out infinite; }
+.prof-music-text {
+  font-size:.58rem;font-weight:300;color:rgba(255,255,255,.50);
+  letter-spacing:.05em;max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.prof-music-eq { display:flex;align-items:flex-end;gap:2px;height:12px; }
+.prof-music-eq span {
+  display:block;width:2px;border-radius:1px;background:rgba(220,185,105,.7);
+  animation:eq var(--eq-d) ease-in-out infinite alternate;
+}
+.prof-music-eq span:nth-child(1){height:5px;--eq-d:.5s;}
+.prof-music-eq span:nth-child(2){height:10px;--eq-d:.7s;}
+.prof-music-eq span:nth-child(3){height:7px;--eq-d:.4s;}
+.prof-music-eq span:nth-child(4){height:12px;--eq-d:.6s;}
+.prof-music-eq span:nth-child(5){height:4px;--eq-d:.8s;}
+@keyframes eq{from{transform:scaleY(.3);}to{transform:scaleY(1);}}
+.prof-music-bar.paused .prof-music-eq span { animation-play-state:paused; }
+
+/* Profile body */
+.prof-body { padding:3.2rem 2.2rem 1.8rem; text-align:center; position:relative; }
+.prof-name {
+  font-family:var(--f-display);font-size:1.9rem;font-weight:300;line-height:1.15;
+  color:rgba(242,215,232,.88);letter-spacing:-.3px;margin-bottom:.20rem;
+}
+.prof-handle {
+  font-size:.66rem;font-weight:200;color:rgba(220,185,105,.62);
+  letter-spacing:.28em;margin-bottom:.75rem;
+}
+.prof-bio {
+  font-family:var(--f-thai);font-size:.82rem;font-weight:300;
+  color:rgba(255,255,255,.40);line-height:1.75;margin-bottom:1.3rem;
+}
+.prof-divider {
+  display:flex;align-items:center;gap:10px;margin:0 auto 1.3rem;width:72%;
+}
+.prof-divider::before{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(220,185,105,.28));}
+.prof-divider::after {content:'';flex:1;height:1px;background:linear-gradient(270deg,transparent,rgba(220,185,105,.28));}
+.prof-divider span{font-size:.52rem;color:rgba(220,185,105,.45);}
+
+/* ══ PHOTO GALLERY ══ */
+.prof-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3px;
+  margin: 0 -2.2rem 1.5rem;
+  overflow: hidden;
+}
+.prof-gallery-item {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  cursor: none;
+  background: rgba(20,8,35,.6);
+}
+.prof-gallery-item:first-child {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.prof-gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  transition: transform .45s ease, filter .45s ease;
+  filter: brightness(.88) saturate(1.1);
+}
+.prof-gallery-item:hover img {
+  transform: scale(1.06);
+  filter: brightness(1) saturate(1.3);
+}
+.prof-gallery-item::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(8,2,18,.0);
+  transition: background .3s ease;
+}
+.prof-gallery-item:hover::after {
+  background: rgba(200,100,155,.10);
+}
+/* placeholder gradient ถ้าไม่มีรูป */
+.prof-gallery-item .gal-placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+  background: radial-gradient(circle at 50% 50%,rgba(80,20,60,.7),rgba(20,6,35,.9));
+  color: rgba(255,255,255,.15);
+}
+
+/* Gallery label */
+.prof-gallery-label {
+  font-size: .60rem; font-weight: 200; letter-spacing: .38em;
+  text-transform: uppercase; color: rgba(255,255,255,.22);
+  margin-bottom: .9rem; text-align: center;
+}
+
+/* Social links */
+.prof-socials { display:flex;justify-content:center;gap:10px;flex-wrap:wrap; }
+.soc-link {
+  display:flex;align-items:center;gap:6px;padding:.52rem 1rem;
+  border-radius:var(--r-full);border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.04);backdrop-filter:blur(10px);
+  text-decoration:none;font-size:.70rem;font-weight:300;
+  color:rgba(255,255,255,.55);letter-spacing:.04em;
+  transition:all .28s ease;cursor:none;white-space:nowrap;
+}
+.soc-link:hover{transform:translateY(-3px);color:rgba(255,255,255,.90);}
+.soc-link.fb:hover{border-color:rgba(66,103,178,.55);background:rgba(66,103,178,.14);box-shadow:0 6px 20px rgba(66,103,178,.25);}
+.soc-link.ig:hover{border-color:rgba(225,105,105,.45);background:linear-gradient(135deg,rgba(64,93,230,.12),rgba(225,48,108,.12),rgba(253,114,45,.12));box-shadow:0 6px 20px rgba(200,60,110,.22);}
+.soc-link.tt:hover{border-color:rgba(255,255,255,.30);background:rgba(0,0,0,.30);box-shadow:0 6px 20px rgba(0,0,0,.35);}
+.soc-icon{font-size:.95rem;flex-shrink:0;}
+
+/* Back button */
+.prof-back {
+  position:absolute;top:14px;left:14px;
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.06);
+  backdrop-filter:blur(12px);color:rgba(255,255,255,.60);font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  cursor:none;transition:all .25s ease;z-index:10;
+}
+.prof-back:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.88);transform:scale(1.1);}
+
+@media(hover:none) and (pointer:coarse){
+  .me-btn,.soc-link,.prof-back,.prof-music-bar,.prof-gallery-item{cursor:pointer;}
+}
 @media (max-width: 480px) {
   .card { padding: 2.5rem 2.1rem 2.3rem; border-radius: var(--r-lg); }
   .heading { font-size: 2.45rem !important; }
@@ -1274,8 +1870,104 @@ textarea.inp {
   </div>
 </div>
 
-<button class="secret-btn-left" onclick="goSecret()">🔒</button>
+<div class="btn-group-bl">
+  <button class="secret-btn-left" onclick="goSecret()">🔒</button>
+  <button class="me-btn" onclick="goMe()" title="Profile">✦</button>
+</div>
 <div class="credit">ทำโดย <a href="https://www.instagram.com/sky._.abc/" target="_blank">@sky._.abc</a></div>
+
+<!-- ═══ S6 — Profile ME ═══ -->
+<div class="screen" id="s6">
+  <div class="card">
+    <div class="card-glow"></div>
+
+    <!-- ── Banner ── -->
+    <div class="prof-banner">
+      <img class="prof-banner-bg" src="me1.jpg" onerror="this.style.display='none'" alt="">
+      <div class="prof-banner-grad"></div>
+      <!-- Sparkle particles -->
+      <div class="prof-banner-shimmer">
+        <div class="prof-spark" style="width:3px;height:3px;background:rgba(240,210,120,.8);border-radius:50%;top:30%;left:15%;--sf:2.8s;--sx:8px;--sy:-12px;"></div>
+        <div class="prof-spark" style="width:2px;height:2px;background:rgba(255,200,230,.7);border-radius:50%;top:50%;left:40%;--sf:3.5s;--sx:-6px;--sy:8px;"></div>
+        <div class="prof-spark" style="width:4px;height:4px;background:rgba(200,160,240,.6);border-radius:50%;top:25%;left:70%;--sf:2.2s;--sx:10px;--sy:6px;"></div>
+        <div class="prof-spark" style="width:2px;height:2px;background:rgba(240,210,120,.7);border-radius:50%;top:65%;left:80%;--sf:4.0s;--sx:-8px;--sy:-6px;"></div>
+        <div class="prof-spark" style="width:3px;height:3px;background:rgba(255,200,230,.8);border-radius:50%;top:40%;left:55%;--sf:3.2s;--sx:6px;--sy:-10px;"></div>
+      </div>
+      <button class="prof-back" onclick="goBack()">←</button>
+      <!-- Music pill -->
+      <div class="prof-music-bar" id="profMusicBar" onclick="toggleProfMusic()">
+        <span class="prof-music-icon" id="profMusicIcon">🎵</span>
+        <span class="prof-music-text" id="profMusicText">my-song</span>
+        <div class="prof-music-eq"><span></span><span></span><span></span><span></span><span></span></div>
+      </div>
+    </div>
+
+    <!-- ── Info row ── -->
+    <div class="prof-info-row">
+      <div class="prof-av">
+        <img src="me1.jpg" alt=""
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="prof-av-ph" style="display:none;">🌟</div>
+      </div>
+      <div class="prof-text">
+        <!-- แก้ชื่อตรงนี้ -->
+        <div class="prof-name">sky._.abc</div>
+        <div class="prof-handle">@sky._.abc</div>
+      </div>
+    </div>
+
+    <!-- ── Stats ── แก้ตัวเลขตรงนี้ -->
+    <div class="prof-stats">
+      <div class="prof-stat">
+        <div class="prof-stat-num">1</div>
+        <div class="prof-stat-lbl">posts</div>
+      </div>
+      <div class="prof-stat">
+        <div class="prof-stat-num">62</div>
+        <div class="prof-stat-lbl">followers</div>
+      </div>
+      <div class="prof-stat">
+        <div class="prof-stat-num">72</div>
+        <div class="prof-stat-lbl">following</div>
+      </div>
+    </div>
+
+    <!-- ── Bio ── แก้ข้อความตรงนี้ -->
+    <div class="prof-bio-wrap">
+      <div class="prof-bio">
+        <br>live happily alone
+      </div>
+    </div>
+
+    <!-- ── Social links ── แก้ลิงก์ตรงนี้ -->
+    <div class="prof-socials">
+      <a class="soc-link fb" href="https://www.facebook.com/skyabc12" target="_blank">
+        <span class="soc-icon">📘</span>Facebook
+      </a>
+      <a class="soc-link ig" href="https://www.instagram.com/sky._.abc/" target="_blank">
+        <span class="soc-icon">📸</span>Instagram
+      </a>
+      <a class="soc-link tt" href="https://www.tiktok.com/@sky_abc5?lang=th-TH" target="_blank">
+        <span class="soc-icon">🎵</span>TikTok
+      </a>
+    </div>
+
+    <div class="prof-sep"><span>gallery ✦</span></div>
+
+    <!-- ── 2 Photos ── รูป: me2.jpg me3.jpg -->
+    <div class="prof-grid">
+      <div class="prof-grid-item">
+        <img src="me2.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="prof-grid-ph" style="display:none;">📷</div>
+      </div>
+      <div class="prof-grid-item">
+        <img src="me3.jpg" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="prof-grid-ph" style="display:none;">📷</div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
 /* ════════════════════════════════════
@@ -1315,8 +2007,8 @@ const cDot=document.getElementById('cd'), cRing=document.getElementById('cr');
 let cx=innerWidth/2, cy=innerHeight/2, rx=cx, ry=cy;
 document.addEventListener('mousemove',e=>{ cx=e.clientX; cy=e.clientY; cDot.style.left=cx+'px'; cDot.style.top=cy+'px'; });
 (function l(){ rx+=(cx-rx)*.12; ry+=(cy-ry)*.12; cRing.style.left=rx+'px'; cRing.style.top=ry+'px'; requestAnimationFrame(l); })();
-document.addEventListener('mouseover',e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left'))document.body.classList.add('hv'); });
-document.addEventListener('mouseout', e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left'))document.body.classList.remove('hv'); });
+document.addEventListener('mouseover',e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.add('hv'); });
+document.addEventListener('mouseout', e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.remove('hv'); });
 
 /* ════════════════════════════════════
    STARS
@@ -1370,7 +2062,15 @@ function playBgm2(){
 /* ════════════════════════════════════
    SCREENS + STEPS
 ════════════════════════════════════ */
-function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+let prevScreen = 's0'; // จำหน้าก่อนหน้า
+function show(id){
+  // จำหน้าเก่า (ยกเว้น s6 ไม่นับ)
+  const cur = document.querySelector('.screen.active');
+  if(cur && cur.id !== 's6') prevScreen = cur.id;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  // ไม่หยุดเพลงตอนเปลี่ยนหน้า — เพลงเล่นต่อเนื่อง
+}
 function setStep(n){
   document.getElementById('sdots').classList.toggle('vis',n>0);
   [0,1,2,3].forEach(i=>{ const d=document.getElementById('sd'+i); d.classList.toggle('active',i===n); d.classList.toggle('done',i<n); });
@@ -1564,8 +2264,53 @@ function checkPw(){
 }
 
 /* ════════════════════════════════════
-   SPECIAL REPLY
+   PROFILE ME (S6)
 ════════════════════════════════════ */
+// ══ แก้ชื่อไฟล์ตรงนี้ ══
+const ME_SONG = 'my-song.mp4';  // ← ชื่อไฟล์เพลง ME
+// รูป: me1.jpg me2.jpg me3.jpg me4.jpg me5.jpg
+
+let profMusicOn = false;
+const profAudio = new Audio(ME_SONG);
+profAudio.loop = true; profAudio.volume = 0.30;
+
+document.getElementById('profMusicText').textContent = ME_SONG.replace(/\.[^.]+$/,'');
+
+function goMe(){
+  show('s6');
+  // เพลงหลักยังเล่นต่อ ไม่หยุด
+  // เล่นเพลง ME เพิ่มขึ้นมาด้วย (หรือจะ pause หลักก็ได้)
+  profAudio.currentTime = 0;
+  profAudio.play().then(()=>{
+    profMusicOn = true;
+    document.getElementById('profMusicBar').classList.remove('paused');
+    document.getElementById('profMusicIcon').textContent = '🎵';
+  }).catch(()=>{});
+}
+
+function goBack(){
+  // หยุดเพลง ME ตอนกลับ
+  profAudio.pause(); profAudio.currentTime = 0;
+  profMusicOn = false;
+  document.getElementById('profMusicBar').classList.add('paused');
+  document.getElementById('profMusicIcon').textContent = '▶️';
+  // กลับหน้าก่อนหน้า
+  show(prevScreen);
+}
+
+function toggleProfMusic(){
+  if(profMusicOn){
+    profAudio.pause();
+    profMusicOn = false;
+    document.getElementById('profMusicIcon').textContent = '▶️';
+    document.getElementById('profMusicBar').classList.add('paused');
+  } else {
+    profAudio.play().catch(()=>{});
+    profMusicOn = true;
+    document.getElementById('profMusicIcon').textContent = '🎵';
+    document.getElementById('profMusicBar').classList.remove('paused');
+  }
+}
 async function sendSpReply(){
   const m=document.getElementById('spMsg').value.trim(), st=document.getElementById('spSt');
   if(!m){ st.textContent='พิมพ์ข้อความก่อนนะ 💌'; st.classList.add('err'); return; }
