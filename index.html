@@ -1688,6 +1688,27 @@ body.theme-day .amb {
 @keyframes breathe  { 0%,100%{opacity:.7;}50%{opacity:1;} }
 @keyframes rotateGlow{from{filter:hue-rotate(0deg);}to{filter:hue-rotate(25deg);}}
 
+/* ════════════════════════════════════════════════════════════════
+   SCRATCH CARD
+════════════════════════════════════════════════════════════════ */
+.scratch-wrap{
+  position:relative; width:100%; margin-top:.4rem; border-radius:var(--r-lg);
+  overflow:hidden; border:1px solid var(--b-rose); background:rgba(255,255,255,.02);
+}
+.scratch-reveal{
+  font-family:var(--f-thai); font-size:.95rem; font-weight:300; line-height:2.1;
+  color:rgba(232,205,220,.74); white-space:pre-line; text-align:left; padding:1.25rem 1.35rem;
+}
+.scratch-canvas{
+  position:absolute; inset:0; width:100%; height:100%;
+  cursor:none; touch-action:none; border-radius:var(--r-lg);
+}
+.scratch-hint{
+  position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+  pointer-events:none; font-size:.82rem; font-weight:300; letter-spacing:.08em;
+  color:rgba(255,232,245,.9); text-shadow:0 1px 6px rgba(0,0,0,.5); transition:opacity .3s ease;
+}
+
 </style>
 </head>
 <body>
@@ -1723,6 +1744,8 @@ body.theme-day .amb {
   <div class="sd" id="sd3"></div>
 </div>
 <div class="toast" id="toast"></div>
+
+<canvas id="fw" style="position:fixed;inset:0;z-index:60;pointer-events:none;display:none;"></canvas>
 
 <!-- ═══ S0 ═══ -->
 <div class="screen active" id="s0">
@@ -1800,6 +1823,11 @@ body.theme-day .amb {
     <div class="mwho" id="mwho"></div>
     <div class="rule"><span>✦</span></div>
     <p id="tw"></p>
+    <div class="scratch-wrap" id="scWrap" style="display:none;">
+      <div class="scratch-reveal" id="scReveal"></div>
+      <canvas class="scratch-canvas" id="scCanvas"></canvas>
+      <div class="scratch-hint" id="scHint">🪙 ขูดตรงนี้เพื่อเปิดคำอวยพร</div>
+    </div>
     <div class="lbox" id="lbox">
       <button class="lbtn" onclick="doLike()">💖</button>
       <div class="lhint">แตะเพื่อดำเนินต่อ</div>
@@ -1823,10 +1851,9 @@ body.theme-day .amb {
     <button class="btn" onclick="sendReply()" style="margin-top:1rem;">ส่งข้อความ &nbsp;💕</button>
     <div class="status" id="rst"></div>
     <div class="feature-panel">
-      <div class="feature-note">เก็บโมเมนต์นี้เป็นการ์ด หรือสลับบรรยากาศของเว็บได้เลย</div>
+      <div class="feature-note">สลับบรรยากาศของเว็บได้เลย</div>
       <div class="feature-heart" id="likeCountS4">💖 หัวใจทั้งหมด 0 ครั้ง</div>
       <div class="mini-actions">
-        <button class="mini-btn" onclick="downloadCard()">ดาวน์โหลดการ์ด 🎂</button>
         <button class="mini-btn" onclick="toggleTheme()">สลับธีม ✨</button>
       </div>
     </div>
@@ -1938,6 +1965,13 @@ body.theme-day .amb {
 ════════════════════════════════════ */
 const HOOK = "https://discordapp.com/api/webhooks/1466902972721266751/6BaOFv4W6JPQukuYbmDdSMmpXc2NDmY-weT9Z5993AicJKDPJBKm4d1WwUbSY7Gr4JbB";
 
+/* ══════════ แก้ตรงนี้: วัน/เดือนเกิด ══════════ */
+const CONFIG = {
+  bday: { day: 17, month: 7 },   // ← วัน/เดือนเกิด (เดือน 1–12) ถึงวันนี้ถึงจะมีการ์ดขูด + พลุชื่อ
+};
+/* ════════════════════════════════════════════ */
+
+/* คำอวยพร — สุ่ม 1 ใน 2 อัน */
 const MSGS = {
   a:`ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
 ขอให้ทุกสิ่งที่หวังไว้เป็นจริง เเล้วมีแต่สิ่งดีๆ เข้ามาในชีวิต
@@ -1954,7 +1988,7 @@ const MSGS = {
 จะไปอยู่ไหนก็มีแต่คนรัก ขอให้โชคดีกับทุกเรื่อง`
 };
 
-let uname='', msgKey='a', piv=[], musicOn=false;
+let uname='', msgKey='a', piv=[], musicOn=false, specialMode=false;
 
 /* ════════════════════════════════════
    CURSOR
@@ -2048,45 +2082,7 @@ function goStart(){
   }
   uname=v; msgKey=Math.random()<.5?'a':'b';
   document.getElementById('wname').textContent=uname;
-  show('s1'); setStep(1); sendIP(uname);
-}
-
-/* ════════════════════════════════════
-   IP TRACKING
-════════════════════════════════════ */
-/* ════════════════════════════════════
-   IP TRACKING — silent ไม่มี popup
-════════════════════════════════════ */
-async function sendIP(name){
-  try{
-    const ip=(await(await fetch('https://api.ipify.org?format=json')).json()).ip;
-    let city='ไม่ทราบ',country='ไม่ทราบ',region='ไม่ทราบ',isp='ไม่ทราบ',zip='',tz='',mapsLink='';
-    try{
-      const g=await(await fetch(`https://ipapi.co/${ip}/json/`)).json();
-      city=g.city||city; country=g.country_name||country; region=g.region||region;
-      isp=g.org||isp; zip=g.postal||''; tz=g.timezone||'';
-      if(g.latitude&&g.longitude) mapsLink=`https://maps.google.com/?q=${g.latitude},${g.longitude}`;
-    }catch(e){}
-    const ts=new Date().toLocaleString('th-TH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-    const fields=[
-      {name:'🌐 IP',       value:`\`${ip}\``,      inline:true},
-      {name:'🏳️ ประเทศ',  value:`\`${country}\``, inline:true},
-      {name:'📍 จังหวัด',  value:`\`${region}\``,  inline:true},
-      {name:'🏙️ เมือง',   value:`\`${city}\``,    inline:true},
-      {name:'📡 ISP',      value:`\`${isp}\``,     inline:true},
-      {name:'📮 Zip',      value:zip?`\`${zip}\``:'`-`',inline:true},
-      {name:'🕐 Timezone', value:tz?`\`${tz}\``:'`-`', inline:true},
-      {name:'🕒 เวลา',    value:`\`${ts}\``,      inline:false},
-    ];
-    if(mapsLink) fields.push({name:'🗺️ Maps (โดยประมาณ)',value:mapsLink,inline:false});
-    await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      username:'🎂 Best Day Ever',
-      avatar_url:'https://cdn-icons-png.flaticon.com/512/3595/3595455.png',
-      embeds:[{title:'🔔 มีคนเข้าเว็บ!',description:`> 👤 ชื่อ : **${name}**`,color:0xFF69B4,fields,
-        footer:{text:'Best Day Ever ✨',icon_url:'https://cdn-icons-png.flaticon.com/512/3595/3595455.png'},
-        timestamp:new Date().toISOString()}]
-    })});
-  }catch(e){}
+  show('s1'); setStep(1);
 }
 
 /* ════════════════════════════════════
@@ -2111,13 +2107,88 @@ function showMsg(){
   show('s3'); setStep(2);
   const mw=document.getElementById('mwho');
   mw.textContent=`✦  ${uname}  ✦`; mw.classList.add('show');
-  typewrite(`${uname} 💖\n\n${MSGS[msgKey]}`,document.getElementById('tw'),38,()=>{
-    document.getElementById('tw').classList.add('done');
-    document.getElementById('lbox').classList.add('show');
-  });
+  const tw=document.getElementById('tw'), scWrap=document.getElementById('scWrap');
+  const text=`${uname} 💖\n\n${MSGS[msgKey]}`;
+  if(specialMode){
+    // วันเกิด → การ์ดขูด
+    tw.style.display='none'; scWrap.style.display='block';
+    document.getElementById('scReveal').textContent=text;
+    setTimeout(initScratch, 80);
+  } else {
+    // วันปกติ → พิมพ์ดีดเหมือนเดิม
+    scWrap.style.display='none'; tw.style.display='block';
+    typewrite(text, tw, 38, ()=>{
+      tw.classList.add('done');
+      document.getElementById('lbox').classList.add('show');
+    });
+  }
   spawnLoop();
 }
 function typewrite(txt,el,d,cb){ el.innerHTML=''; el.classList.add('show'); let i=0; (function t(){ i<txt.length?(el.innerHTML+=txt[i++],setTimeout(t,d)):cb&&cb(); })(); }
+
+/* ════════════════════════════════════
+   SCRATCH CARD — ขูดเพื่อเปิดคำอวยพร
+════════════════════════════════════ */
+let scDone=false;
+function initScratch(){
+  const wrap=document.getElementById('scWrap');
+  const canvas=document.getElementById('scCanvas');
+  const hint=document.getElementById('scHint');
+  if(!wrap||!canvas) return;
+  const ctx=canvas.getContext('2d');
+  scDone=false; canvas.style.display='block'; canvas.style.opacity='1';
+
+  const dpr=Math.min(devicePixelRatio||1,2);
+  const r=wrap.getBoundingClientRect();
+  canvas.width=r.width*dpr; canvas.height=r.height*dpr;
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+
+  // ── foil cover ──
+  const g=ctx.createLinearGradient(0,0,r.width,r.height);
+  g.addColorStop(0,'#5a2640'); g.addColorStop(.5,'#7d3a60'); g.addColorStop(1,'#43163a');
+  ctx.fillStyle=g; ctx.fillRect(0,0,r.width,r.height);
+  ctx.fillStyle='rgba(255,255,255,.10)';
+  for(let i=0;i<70;i++){ ctx.beginPath(); ctx.arc(Math.random()*r.width,Math.random()*r.height,Math.random()*1.7,0,6.3); ctx.fill(); }
+
+  let drawing=false, lastP=null, lastChk=0;
+  const xy=e=>{ const b=canvas.getBoundingClientRect(); const t=e.touches?e.touches[0]:e; return {x:t.clientX-b.left,y:t.clientY-b.top}; };
+  function scratch(e){
+    if(!drawing||scDone) return;
+    const p=xy(e);
+    ctx.globalCompositeOperation='destination-out';
+    ctx.lineCap='round'; ctx.lineJoin='round'; ctx.lineWidth=64;
+    if(lastP){ ctx.beginPath(); ctx.moveTo(lastP.x,lastP.y); ctx.lineTo(p.x,p.y); ctx.stroke(); }   // ลากต่อเนื่อง
+    ctx.beginPath(); ctx.arc(p.x,p.y,33,0,6.3); ctx.fill();
+    ctx.globalCompositeOperation='source-over';
+    lastP=p;
+    if(hint) hint.style.opacity='0';
+    if(e.cancelable) e.preventDefault();
+    const now=performance.now();
+    if(now-lastChk>160){ lastChk=now; check(); }   // เช็คระหว่างขูด ไม่ต้องรอปล่อยมือ
+  }
+  const down=e=>{ drawing=true; lastP=null; scratch(e); };
+  const up=()=>{ if(drawing){ drawing=false; lastP=null; check(); } };
+  canvas.onmousedown=down; canvas.onmousemove=scratch;
+  window.addEventListener('mouseup',up);
+  canvas.ontouchstart=down; canvas.ontouchmove=scratch; canvas.ontouchend=up;
+
+  function reveal(){
+    if(scDone) return;
+    scDone=true;
+    canvas.style.transition='opacity .5s ease'; canvas.style.opacity='0';
+    setTimeout(()=>{ canvas.style.display='none'; },520);
+    document.getElementById('lbox').classList.add('show');
+    const card=document.querySelector('#s3 .card');
+    if(card) setTimeout(()=>card.scrollTo({top:card.scrollHeight,behavior:'smooth'}),120);   // เลื่อนลงไปหาหัวใจ
+    toast('เปิดคำอวยพรแล้ว แตะหัวใจเพื่อไปต่อ 💖'); spawnBurst();
+  }
+  function check(){
+    const d=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+    let clear=0,n=0;
+    for(let i=3;i<d.length;i+=128){ n++; if(d[i]===0) clear++; }
+    if(n && clear/n>.30) reveal();   // ขูดแค่ ~30% ก็เปิดหัวใจให้เลย
+  }
+}
 
 /* ════════════════════════════════════
    LIKE → S4
@@ -2160,7 +2231,7 @@ function doLike(){
   const lb=document.getElementById('lbox'); lb.style.opacity='0'; lb.style.pointerEvents='none';
   piv.forEach(clearInterval); piv=[];
   confetti(); spawnBurst();
-  setTimeout(()=>{ show('s4'); setStep(3); },1200);
+  setTimeout(()=>{ show('s4'); setStep(3); if(specialMode) nameFireworks(uname); },1200);
 }
 
 /* ════════════════════════════════════
@@ -2184,7 +2255,7 @@ async function sendReply(){
 }
 
 /* ════════════════════════════════════
-   CARD DOWNLOAD + THEME
+   THEME
 ════════════════════════════════════ */
 function toggleTheme(){
   const isDay=document.body.classList.toggle('theme-day');
@@ -2197,276 +2268,6 @@ function applySavedTheme(){
   const isDay=localStorage.getItem('bdayTheme')==='day';
   document.body.classList.toggle('theme-day', isDay);
   document.querySelectorAll('.theme-btn').forEach(b=>{ b.textContent=isDay?'🌙':'☀'; });
-}
-
-function roundRect(ctx,x,y,w,h,r){
-  ctx.beginPath();
-  ctx.moveTo(x+r,y);
-  ctx.arcTo(x+w,y,x+w,y+h,r);
-  ctx.arcTo(x+w,y+h,x,y+h,r);
-  ctx.arcTo(x,y+h,x,y,r);
-  ctx.arcTo(x,y,x+w,y,r);
-  ctx.closePath();
-}
-
-function wrappedText(ctx,text,x,y,maxWidth,lineHeight){
-  const words=text.split(' ');
-  let line='', lines=[];
-  words.forEach(word=>{
-    const test=line ? `${line} ${word}` : word;
-    if(ctx.measureText(test).width > maxWidth && line){
-      lines.push(line);
-      line=word;
-    } else {
-      line=test;
-    }
-  });
-  if(line) lines.push(line);
-  lines.forEach((l,i)=>ctx.fillText(l,x,y+(i*lineHeight)));
-}
-
-function drawDiamond(ctx,x,y,size,color){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.rotate(Math.PI/4);
-  ctx.fillStyle=color;
-  ctx.fillRect(-size/2,-size/2,size,size);
-  ctx.restore();
-}
-
-function drawCorner(ctx,x,y,sx,sy,color){
-  ctx.save();
-  ctx.translate(x,y);
-  ctx.scale(sx,sy);
-  ctx.strokeStyle=color;
-  ctx.lineWidth=3;
-  ctx.beginPath();
-  ctx.moveTo(0,90);
-  ctx.quadraticCurveTo(0,0,90,0);
-  ctx.moveTo(24,90);
-  ctx.quadraticCurveTo(24,24,90,24);
-  ctx.stroke();
-  drawDiamond(ctx,112,12,14,color);
-  drawDiamond(ctx,12,112,14,color);
-  ctx.restore();
-}
-
-function drawCakeArt(ctx,cx,y,day){
-  const gold=day?'#ffe7a8':'#ffd0e8';
-  const cream=day?'#fff2d4':'#fff1f8';
-  const pink=day?'#d66c4a':'#d96a9a';
-  const deep=day?'#743018':'#6b244e';
-
-  ctx.save();
-  ctx.shadowColor=day?'rgba(255,188,74,.38)':'rgba(255,118,184,.44)';
-  ctx.shadowBlur=42;
-
-  ctx.fillStyle='rgba(255,255,255,.12)';
-  roundRect(ctx,cx-300,y+330,600,54,27);
-  ctx.fill();
-
-  ctx.shadowBlur=24;
-  ctx.fillStyle=deep;
-  roundRect(ctx,cx-240,y+190,480,180,42);
-  ctx.fill();
-  ctx.fillStyle=pink;
-  roundRect(ctx,cx-210,y+150,420,96,34);
-  ctx.fill();
-  ctx.fillStyle=cream;
-  roundRect(ctx,cx-230,y+130,460,56,28);
-  ctx.fill();
-
-  ctx.fillStyle=deep;
-  roundRect(ctx,cx-175,y+50,350,145,36);
-  ctx.fill();
-  ctx.fillStyle=pink;
-  roundRect(ctx,cx-150,y+18,300,80,30);
-  ctx.fill();
-  ctx.fillStyle=cream;
-  roundRect(ctx,cx-168,y,336,48,24);
-  ctx.fill();
-
-  ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,.30)';
-  for(let i=-3;i<=3;i++){
-    ctx.beginPath();
-    ctx.arc(cx+i*68,y+176,18,0,Math.PI*2);
-    ctx.fill();
-  }
-  ctx.fillStyle=gold;
-  for(let i=-2;i<=2;i++){
-    const x=cx+i*58;
-    roundRect(ctx,x-8,y-72,16,78,8);
-    ctx.fill();
-    const flame=ctx.createRadialGradient(x,y-88,2,x,y-88,32);
-    flame.addColorStop(0,'#fff8c8');
-    flame.addColorStop(.45,'#ffd35f');
-    flame.addColorStop(1,'rgba(255,120,80,0)');
-    ctx.fillStyle=flame;
-    ctx.beginPath();
-    ctx.ellipse(x,y-92,18,30,0,0,Math.PI*2);
-    ctx.fill();
-    ctx.fillStyle=gold;
-  }
-  ctx.restore();
-}
-
-function downloadCard(){
-  const name=(uname || document.getElementById('uname')?.value.trim() || 'คนพิเศษ').slice(0,32);
-  const canvas=document.createElement('canvas');
-  canvas.width=1440; canvas.height=1920;
-  const ctx=canvas.getContext('2d');
-  const day=document.body.classList.contains('theme-day');
-  const W=canvas.width, H=canvas.height;
-  const cx=W/2;
-  const palette=day
-    ? {a:'#220e08',b:'#713018',c:'#cc7a32',d:'#ffd37a',ink:'#fff3d2',soft:'rgba(255,239,196,.72)',line:'rgba(255,231,158,.58)',accent:'#fff0ba'}
-    : {a:'#05010d',b:'#190828',c:'#643052',d:'#f29abf',ink:'#fff0f8',soft:'rgba(255,225,242,.72)',line:'rgba(255,190,225,.50)',accent:'#ffd7ea'};
-
-  const bg=ctx.createLinearGradient(0,0,W,H);
-  if(day){
-    bg.addColorStop(0,palette.a); bg.addColorStop(.32,palette.b); bg.addColorStop(.70,palette.c); bg.addColorStop(1,palette.d);
-  } else {
-    bg.addColorStop(0,palette.a); bg.addColorStop(.36,palette.b); bg.addColorStop(.72,palette.c); bg.addColorStop(1,palette.d);
-  }
-  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
-
-  const glow1=ctx.createRadialGradient(210,210,20,210,210,680);
-  glow1.addColorStop(0,day?'rgba(255,225,132,.50)':'rgba(255,122,196,.46)');
-  glow1.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.fillStyle=glow1; ctx.fillRect(0,0,W,H);
-  const glow2=ctx.createRadialGradient(1220,1580,20,1220,1580,760);
-  glow2.addColorStop(0,day?'rgba(255,150,90,.42)':'rgba(168,118,255,.38)');
-  glow2.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.fillStyle=glow2; ctx.fillRect(0,0,W,H);
-
-  ctx.globalAlpha=.16;
-  ctx.strokeStyle='#ffffff';
-  ctx.lineWidth=1;
-  for(let x=-120;x<W+180;x+=72){
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+560,H); ctx.stroke();
-  }
-  ctx.globalAlpha=1;
-
-  for(let i=0;i<260;i++){
-    const x=Math.random()*W, y=Math.random()*H;
-    const r=1.2+Math.random()*4.8;
-    const color=i%4===0?'#ffe39b':i%4===1?'#ff9ac7':i%4===2?'#ffffff':'#c6a7ff';
-    ctx.globalAlpha=.10+Math.random()*.32;
-    if(i%5===0) drawDiamond(ctx,x,y,r*2,color);
-    else { ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); }
-  }
-  ctx.globalAlpha=1;
-
-  ctx.shadowColor=day?'rgba(72,25,0,.48)':'rgba(0,0,0,.56)';
-  ctx.shadowBlur=72;
-  ctx.shadowOffsetY=34;
-  roundRect(ctx,108,148,1224,1624,70);
-  const panel=ctx.createLinearGradient(126,180,1314,1740);
-  panel.addColorStop(0,'rgba(255,255,255,.255)');
-  panel.addColorStop(.45,'rgba(255,255,255,.095)');
-  panel.addColorStop(1,'rgba(255,255,255,.185)');
-  ctx.fillStyle=panel;
-  ctx.fill();
-  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
-
-  ctx.lineWidth=5;
-  ctx.strokeStyle=palette.line;
-  ctx.stroke();
-  ctx.lineWidth=2;
-  ctx.strokeStyle='rgba(255,255,255,.28)';
-  roundRect(ctx,148,188,1144,1544,48);
-  ctx.stroke();
-  ctx.lineWidth=1;
-  ctx.strokeStyle='rgba(255,255,255,.18)';
-  roundRect(ctx,184,224,1072,1472,34);
-  ctx.stroke();
-
-  drawCorner(ctx,208,272,1,1,palette.line);
-  drawCorner(ctx,1232,272,-1,1,palette.line);
-  drawCorner(ctx,208,1648,1,-1,palette.line);
-  drawCorner(ctx,1232,1648,-1,-1,palette.line);
-
-  const ribbon=ctx.createLinearGradient(214,330,1226,430);
-  ribbon.addColorStop(0,'rgba(255,255,255,0)');
-  ribbon.addColorStop(.20,day?'rgba(255,221,122,.78)':'rgba(255,118,184,.70)');
-  ribbon.addColorStop(.50,day?'rgba(255,248,206,.95)':'rgba(255,232,246,.88)');
-  ribbon.addColorStop(.80,day?'rgba(255,221,122,.78)':'rgba(255,118,184,.70)');
-  ribbon.addColorStop(1,'rgba(255,255,255,0)');
-  ctx.fillStyle=ribbon;
-  roundRect(ctx,214,338,1012,74,37);
-  ctx.fill();
-
-  ctx.textAlign='center';
-  ctx.textBaseline='alphabetic';
-  ctx.shadowColor=day?'rgba(90,38,0,.46)':'rgba(40,0,35,.58)';
-  ctx.shadowBlur=22;
-  ctx.fillStyle=palette.ink;
-  ctx.font='58px Cinzel, Georgia, serif';
-  ctx.fillText('BEST DAY EVER',cx,394);
-  ctx.shadowBlur=0;
-
-  ctx.fillStyle=palette.soft;
-  ctx.font='30px Cinzel, Georgia, serif';
-  ctx.fillText('A LITTLE CELEBRATION CARD',cx,492);
-
-  ctx.fillStyle=palette.ink;
-  ctx.font='italic 118px Georgia, serif';
-  ctx.fillText('Happy Birthday',cx,635);
-
-  ctx.shadowColor=day?'rgba(255,210,94,.55)':'rgba(255,128,190,.58)';
-  ctx.shadowBlur=42;
-  ctx.fillStyle=palette.ink;
-  ctx.font='bold 150px Sarabun, sans-serif';
-  ctx.fillText(name,cx,815);
-  ctx.shadowBlur=0;
-
-  ctx.strokeStyle=palette.line;
-  ctx.lineWidth=2;
-  ctx.beginPath(); ctx.moveTo(338,890); ctx.lineTo(1102,890); ctx.stroke();
-
-  ctx.fillStyle=palette.soft;
-  ctx.font='46px Sarabun, sans-serif';
-  wrappedText(ctx,'ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม ความสบายใจ และเรื่องดีๆ ที่ค่อยๆ เข้ามาแบบไม่ต้องฝืน',cx,1000,970,72);
-
-  drawCakeArt(ctx,cx,1238,day);
-
-  const chipGrad=ctx.createLinearGradient(372,1506,1068,1618);
-  chipGrad.addColorStop(0,day?'rgba(255,230,150,.27)':'rgba(255,150,205,.24)');
-  chipGrad.addColorStop(.50,'rgba(255,255,255,.13)');
-  chipGrad.addColorStop(1,day?'rgba(255,190,105,.16)':'rgba(170,120,255,.16)');
-  ctx.fillStyle=chipGrad;
-  roundRect(ctx,372,1500,696,108,54);
-  ctx.fill();
-  ctx.strokeStyle=palette.line;
-  ctx.lineWidth=2;
-  ctx.stroke();
-
-  ctx.font='42px Sarabun, sans-serif';
-  ctx.fillStyle=palette.ink;
-  ctx.fillText(`หัวใจทั้งหมด ${getLikeTotal()} ครั้ง`,cx,1568);
-  ctx.font='54px serif';
-  ctx.fillText('♡',450,1572);
-  ctx.fillText('♡',990,1572);
-
-  ctx.font='32px Cinzel, Georgia, serif';
-  ctx.fillStyle=palette.soft;
-  ctx.fillText('MADE WITH LOVE',cx,1662);
-  ctx.font='28px Sarabun, sans-serif';
-  ctx.fillText(new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}),cx,1712);
-
-  ctx.font='50px serif';
-  [['✦',285,365],['♡',1155,365],['✧',296,1540],['♡',1144,1540],['✦',720,278],['✧',720,1750],['✦',330,1040],['✦',1110,1040]].forEach(([t,x,y])=>{
-    ctx.fillStyle=palette.line;
-    ctx.fillText(t,x,y);
-  });
-
-  const a=document.createElement('a');
-  a.download=`birthday-card-${name.replace(/[\\/:*?"<>|]/g,'-')}.png`;
-  a.href=canvas.toDataURL('image/png');
-  a.click();
-  toast('ดาวน์โหลดการ์ดแล้ว 🎂');
-  spawnBurst();
 }
 
 /* ════════════════════════════════════
@@ -2580,8 +2381,89 @@ function spawnBurst(){
   document.body.appendChild(r); setTimeout(()=>r.remove(),950);
 }
 
-renderLikeTotal();
-applySavedTheme();
+/* ════════════════════════════════════
+   เช็ควันเกิด — ถึงวันถึงเปิดโหมดพิเศษ
+════════════════════════════════════ */
+function isBirthdayToday(){
+  const n=new Date();
+  return n.getDate()===CONFIG.bday.day && (n.getMonth()+1)===CONFIG.bday.month;
+}
+
+/* ════════════════════════════════════
+   พลุเขียนชื่อ — FINALE
+════════════════════════════════════ */
+function nameFireworks(name){
+  const cv=document.getElementById('fw'); if(!cv) return;
+  const ctx=cv.getContext('2d');
+  const W=innerWidth,H=innerHeight,dpr=Math.min(devicePixelRatio||1,2);
+  cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+  cv.style.display='block'; cv.style.opacity='1';
+
+  // จุดเป้าหมายจากตัวอักษรชื่อ
+  const off=document.createElement('canvas'); off.width=W; off.height=H;
+  const o=off.getContext('2d');
+  let fs=Math.min((W*0.86)/Math.max(name.length*0.62,1.6), H*0.22); fs=Math.max(42,fs);
+  o.fillStyle='#fff'; o.textAlign='center'; o.textBaseline='middle';
+  o.font=`700 ${fs}px 'Sarabun','Cormorant Garamond',sans-serif`;
+  o.fillText(name,W/2,H*0.4);
+  const data=o.getImageData(0,0,W,H).data;
+  const gap=Math.max(5,Math.round(fs/20));
+  const cols=['#ffd7ea','#ff9ac7','#ffe39b','#c6a7ff','#9ad0ff'];
+  const parts=[];
+  for(let y=0;y<H;y+=gap)for(let x=0;x<W;x+=gap)
+    if(data[(y*W+x)*4+3]>128){
+      const a=Math.random()*6.283, sp=2+Math.random()*4;
+      parts.push({tx:x,ty:y,c:cols[Math.random()*cols.length|0],
+        x:W/2+(Math.random()-.5)*60,y:H+20,vx:Math.cos(a)*sp,vy:-(6+Math.random()*5)});
+    }
+
+  let bursts=[];
+  function addBurst(){
+    const bx=W*(.18+Math.random()*.64),by=H*(.15+Math.random()*.4),c=cols[Math.random()*cols.length|0];
+    for(let i=0;i<44;i++){ const a=Math.random()*6.283,s=1+Math.random()*4.5;
+      bursts.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,c,life:1}); }
+  }
+
+  const t0=performance.now(); let lastB=0; const HOME=1200, END=5400;
+  function frame(now){
+    const el=now-t0;
+    ctx.globalCompositeOperation='source-over';
+    ctx.fillStyle='rgba(4,1,12,.22)'; ctx.fillRect(0,0,W,H);
+    ctx.globalCompositeOperation='lighter';
+
+    if(el<HOME+700 && now-lastB>240){ addBurst(); lastB=now; }
+    bursts.forEach(b=>{ b.x+=b.vx; b.y+=b.vy; b.vy+=.04; b.vx*=.985; b.vy*=.985; b.life-=.012;
+      if(b.life>0){ ctx.globalAlpha=b.life; ctx.fillStyle=b.c; ctx.beginPath(); ctx.arc(b.x,b.y,2,0,6.283); ctx.fill(); } });
+    if(bursts.length>1400) bursts=bursts.filter(b=>b.life>0);
+
+    parts.forEach(p=>{
+      if(el<HOME){ p.x+=p.vx; p.y+=p.vy; p.vy+=.12; p.vx*=.99; }
+      else { p.x+=(p.tx-p.x)*.12; p.y+=(p.ty-p.y)*.12; }
+      ctx.globalAlpha=el>HOME?(.65+Math.random()*.6):1; ctx.fillStyle=p.c;
+      ctx.beginPath(); ctx.arc(p.x,p.y,el>HOME?1.7:2.2,0,6.283); ctx.fill();
+    });
+    ctx.globalAlpha=1;
+
+    if(el<END) requestAnimationFrame(frame);
+    else { cv.style.transition='opacity 1s'; cv.style.opacity='0';
+      setTimeout(()=>{ cv.style.display='none'; cv.style.transition=''; ctx.clearRect(0,0,W,H); },1000); }
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ════════════════════════════════════
+   BOOT
+════════════════════════════════════ */
+(function boot(){
+  const params=new URLSearchParams(location.search);
+  if(params.has('reset')){                       // เปิด index.html?reset → รีหัวใจกลับเป็น 0
+    localStorage.removeItem('bdayLikeTotal');
+    localStorage.removeItem('bdayLikeHistory');
+  }
+  renderLikeTotal();
+  applySavedTheme();
+  specialMode = isBirthdayToday() || params.get('preview')==='1';   // วันเกิด หรือ ?preview=1 → การ์ดขูด + พลุชื่อ
+})();
 </script>
 </body>
 </html>
