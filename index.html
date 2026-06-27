@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
@@ -851,95 +851,102 @@ textarea.inp {
 
 
 /* ════════════════════════════════════════════════════════════════
-   PASSWORD SCREEN (S5)
+   EXTRA FEATURES
 ════════════════════════════════════════════════════════════════ */
-#s5 .card { max-width: 468px; overflow-y: auto; max-height: 92vh; scrollbar-width: thin; }
-#s5 .card::-webkit-scrollbar { width: 3px; }
-#s5 .card::-webkit-scrollbar-thumb { background: rgba(200,90,140,.22); border-radius: var(--r-full); }
-
-.lockw {
-  display: block; font-size: 2.6rem; margin-bottom: 0.95rem;
-  animation: lkf 3.8s ease-in-out infinite;
-  filter: drop-shadow(0 4px 20px rgba(195, 85, 138, 0.42));
+.like-count {
+  margin-top: .8rem;
+  font-size: .72rem;
+  font-weight: 300;
+  color: rgba(245,205,228,.52);
+  letter-spacing: .08em;
 }
-@keyframes lkf{0%,100%{transform:translateY(0) rotate(-4.5deg);}50%{transform:translateY(-8px) rotate(4.5deg);}}
-
-/* PW dots */
-.pwdots { display: flex; justify-content: center; gap: 12px; margin-bottom: 1.45rem; min-height: 16px; }
-.pdi {
-  width: 12px; height: 12px; border-radius: 50%;
-  border: 1px solid rgba(192, 90, 142, 0.32); background: transparent;
-  transition: all 0.28s var(--e-spring);
+.feature-heart {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  gap: .45rem;
+  width: fit-content;
+  padding: .46rem .95rem;
+  border: 1px solid rgba(235,145,190,.18);
+  border-radius: var(--r-full);
+  background: rgba(255,120,175,.055);
+  color: rgba(255,205,230,.70);
+  font-size: .74rem;
+  font-weight: 300;
+  letter-spacing: .04em;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
 }
-.pdi.on {
-  background: radial-gradient(circle, rgba(218,125,168,0.85), rgba(185,90,140,0.68));
-  border-color: rgba(218,130,175,.75);
-  box-shadow: 0 0 10px rgba(192,90,142,.55), 0 0 20px rgba(192,90,142,.22);
-  transform: scale(1.18);
+.feature-panel {
+  margin-top: 1.45rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  display: grid;
+  gap: .82rem;
 }
-.pdi.err {
-  background: radial-gradient(circle, rgba(235,100,92,.75), rgba(210,78,72,.58));
-  border-color: rgba(248,118,110,.75);
-  box-shadow: 0 0 12px rgba(228,85,82,.58);
-  animation: ef 0.38s ease both;
+.feature-note {
+  font-size: .72rem;
+  line-height: 1.7;
+  color: rgba(255,255,255,.34);
+  text-align: center;
 }
-@keyframes ef{0%,100%{transform:scale(1);}32%{transform:scale(1.32);}68%{transform:scale(.78);}}
-
-.pwhint {
-  font-size: 0.63rem; font-weight: 200; color: rgba(255,255,255,.12);
-  letter-spacing: 0.22em; margin: 0.38rem 0 1.15rem;
+.mini-actions {
+  display: flex;
+  justify-content: center;
+  gap: .7rem;
+  flex-wrap: wrap;
 }
-.pwerr {
-  font-size: 0.74rem; font-weight: 200; color: rgba(235,110,100,.78);
-  letter-spacing: 0.08em; min-height: 1.12rem; margin-top: 0.55rem; text-align: center;
+.mini-btn {
+  border: 1px solid rgba(220,185,105,.22);
+  background: rgba(220,185,105,.07);
+  color: rgba(240,218,165,.84);
+  border-radius: var(--r-full);
+  padding: .72rem 1.05rem;
+  font-family: var(--f-body);
+  font-size: .75rem;
+  font-weight: 300;
+  letter-spacing: .04em;
+  cursor: none;
+  transition: transform .25s var(--e-spring), border-color .25s ease, background .25s ease, box-shadow .25s ease;
 }
-@keyframes shake{0%,100%{transform:translateX(0);}15%{transform:translateX(-9px);}30%{transform:translateX(9px);}48%{transform:translateX(-6px);}64%{transform:translateX(6px);}82%{transform:translateX(-2px);}}
-.shake { animation: shake 0.52s ease both !important; }
-
-/* Special message area */
-#spArea { display: none; flex-direction: column; align-items: center; padding: 0.4rem 0 0.7rem; }
-#spArea.show { display: flex; animation: fup 0.65s var(--e-smooth) both; }
-
-.spico {
-  font-size: 2.7rem; margin-bottom: 0.95rem;
-  animation: ckf 3.2s ease-in-out infinite;
-  filter: drop-shadow(0 4px 18px rgba(200,80,135,.38));
+.mini-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(235,205,125,.45);
+  background: rgba(220,185,105,.14);
+  box-shadow: 0 8px 26px rgba(220,185,105,.14);
 }
-.sptag {
-  display: inline-flex; align-items: center; gap: 0.42rem;
-  font-size: 0.60rem; letter-spacing: 0.38em; text-transform: uppercase;
-  color: rgba(215, 162, 108, 0.58);
-  border: 1px solid rgba(215, 162, 88, 0.16); border-radius: var(--r-full);
-  padding: 0.28rem 0.90rem 0.28rem 0.72rem; margin-bottom: 1.35rem;
-  background: rgba(215, 162, 88, 0.05);
+.theme-btn {
+  border: 1px solid rgba(120,170,210,.22);
+  background: rgba(120,170,210,.06);
+  color: rgba(185,220,245,.78);
 }
-.sptag::before { content: '✦'; font-size: 0.46rem; opacity: 0.72; }
-
-.spname {
-  font-family: var(--f-display); font-size: 2.0rem; font-weight: 300;
-  font-style: italic; color: rgba(238, 200, 222, 0.82);
-  margin-bottom: 0.32rem; letter-spacing: -0.2px;
+.theme-btn:hover {
+  border-color: rgba(120,190,235,.46);
+  background: rgba(120,170,210,.14);
+  box-shadow: 0 4px 22px rgba(120,170,210,.28), 0 0 36px rgba(120,170,210,.12);
 }
-.sprule {
-  display: flex; align-items: center; gap: 9px;
-  margin: 0 auto 1.7rem; width: 56%;
+body.theme-day {
+  --c-bg: #130d09;
+  --c-deep: #211309;
+  --c-card: rgba(38, 22, 12, 0.84);
+  --c-card2: rgba(48, 28, 14, 0.88);
+  --c-rose: #e39a8a;
+  --c-rose-dim: rgba(227, 154, 138, 0.68);
+  --c-rose-glow: rgba(230, 132, 90, 0.48);
+  --c-pink: rgba(255, 216, 186, 0.90);
+  --c-gold: rgba(248, 205, 108, 0.88);
+  --c-gold-dim: rgba(248, 205, 108, 0.52);
+  --b-rose: rgba(248, 170, 110, 0.22);
+  --b-rose-md: rgba(250, 188, 118, 0.35);
+  --b-rose-hi: rgba(255, 205, 125, 0.55);
 }
-.sprule::before { content:''; flex:1; height:1px; background:linear-gradient(90deg,transparent,rgba(175,85,132,.30)); }
-.sprule::after  { content:''; flex:1; height:1px; background:linear-gradient(270deg,transparent,rgba(175,85,132,.30)); }
-.sprule span { font-size:.54rem; color:rgba(185,100,145,.40); }
-
-#spTw {
-  font-family: var(--f-thai); font-size: 0.98rem; font-weight: 300;
-  color: rgba(235, 205, 225, 0.72); line-height: 2.15;
-  white-space: pre-line; text-align: left; width: 100%;
-  opacity: 0; transition: opacity 0.75s ease;
+body.theme-day #bgv { filter: brightness(.20) saturate(1.35) hue-rotate(34deg); }
+body.theme-day .amb {
+  background:
+    radial-gradient(ellipse 120% 80% at  6% 15%, rgba(215, 120, 55, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse 90% 80% at 92% 25%, rgba(235, 188, 70, 0.26) 0%, transparent 48%),
+    radial-gradient(ellipse 100% 70% at 50% 100%, rgba(150, 80, 40, 0.32) 0%, transparent 58%);
 }
-#spTw.show { opacity: 1; }
-#spTw::after { content:'|'; animation:bl .92s step-end infinite; color:rgba(192,105,152,.58); }
-#spTw.done::after { display: none; }
-
-.sprw { width:100%; margin-top:1.9rem; opacity:0; transition:opacity .65s ease; }
-.sprw.show { opacity:1; }
 
 /* ════════════════════════════════════════════════════════════════
    MUSIC BUTTON
@@ -1021,15 +1028,14 @@ textarea.inp {
 .credit a:hover { color: rgba(228,148,192,.92); }
 
 /* ════════════════════════════════════════════════════════════════
-   BOTTOM LEFT BUTTON GROUP (🔒 + ✦)
+   BOTTOM LEFT BUTTON GROUP
 ════════════════════════════════════════════════════════════════ */
 .btn-group-bl {
   position: fixed; bottom: 18px; left: 18px; z-index: 1000;
   display: flex; flex-direction: column; align-items: center; gap: 10px;
 }
 
-/* shared — ทั้ง 2 ปุ่มเหมือนกันทุกอย่าง ยกเว้นสี */
-.secret-btn-left,
+/* shared */
 .me-btn {
   width: 46px !important;
   height: 46px !important;
@@ -1052,28 +1058,6 @@ textarea.inp {
   flex-shrink: 0;
 }
 
-/* 🔒 rose */
-.secret-btn-left {
-  border: 1px solid rgba(200,85,138,.22);
-  background: rgba(200,85,138,.06);
-  color: rgba(255,255,255,.45);
-}
-.secret-btn-left::before {
-  content:''; position:absolute; inset:-5px; border-radius:50%;
-  border:1px solid rgba(200,85,138,.20); animation:sbp 3.0s ease-in-out infinite;
-}
-.secret-btn-left::after {
-  content:''; position:absolute; inset:-12px; border-radius:50%;
-  border:1px solid rgba(200,85,138,.09); animation:sbp 3.0s ease-in-out infinite .8s;
-}
-.secret-btn-left:hover {
-  background: rgba(198,76,132,.22); border-color: rgba(220,108,168,.40);
-  transform: scale(1.12) rotate(10deg);
-  box-shadow: 0 4px 22px rgba(198,76,132,.40), 0 0 36px rgba(198,76,132,.18);
-  color: rgba(255,255,255,.85);
-}
-.secret-btn-left:active { transform: scale(.90) rotate(0deg); }
-
 /* ✦ gold */
 .me-btn {
   border: 1px solid rgba(220,185,105,.22);
@@ -1095,6 +1079,16 @@ textarea.inp {
   color: rgba(240,210,120,.98);
 }
 .me-btn:active { transform: scale(.90); }
+.me-btn.theme-btn {
+  border-color: rgba(120,170,210,.22);
+  background: rgba(120,170,210,.06);
+  color: rgba(185,220,245,.78);
+}
+.me-btn.theme-btn:hover {
+  border-color: rgba(120,190,235,.46);
+  background: rgba(120,170,210,.14);
+  box-shadow: 0 4px 22px rgba(120,170,210,.28), 0 0 36px rgba(120,170,210,.12);
+}
 @keyframes sbp{0%,100%{transform:scale(1);opacity:.82;}50%{transform:scale(1.09);opacity:.20;}}
 
 /* ════════════════════════════════════════════════════════════════
@@ -1651,7 +1645,7 @@ textarea.inp {
 .prof-back:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.88);transform:scale(1.1);}
 
 @media(hover:none) and (pointer:coarse){
-  .me-btn,.soc-link,.prof-back,.prof-music-bar,.prof-gallery-item{cursor:pointer;}
+  .me-btn,.mini-btn,.soc-link,.prof-back,.prof-music-bar,.prof-gallery-item{cursor:pointer;}
 }
 @media (max-width: 480px) {
   .card { padding: 2.5rem 2.1rem 2.3rem; border-radius: var(--r-lg); }
@@ -1660,7 +1654,7 @@ textarea.inp {
   #cdn { font-size: 7rem; }
   .cdrw { width: 190px; height: 190px; }
   .mhl { font-size: 2.1rem; }
-  #tw, #spTw { font-size: 0.90rem; line-height: 1.98; }
+  #tw { font-size: 0.90rem; line-height: 1.98; }
   .wn { font-size: 2.5rem; }
   .inp { padding: 0.88rem 1.35rem; font-size: 0.90rem; }
   .btn { padding: 0.92rem 1.8rem; font-size: 0.88rem; }
@@ -1669,7 +1663,7 @@ textarea.inp {
   .card { padding-top: 2.1rem; padding-bottom: 1.9rem; }
   .caption { margin-bottom: 1.5rem; }
   .rule { margin-bottom: 1.5rem; }
-  #s3 .card, #s5 .card { max-height: 95vh; }
+  #s3 .card { max-height: 95vh; }
 }
 @media (max-width: 360px) {
   .card { padding: 2rem 1.65rem 1.85rem; }
@@ -1680,7 +1674,7 @@ textarea.inp {
 @media (hover: none) and (pointer: coarse) {
   body { cursor: auto; }
   #cd, #cr { display: none; }
-  .btn, .lbtn, .secret-btn-left, .eyebtn { cursor: pointer; }
+  .btn, .lbtn, .mini-btn, .me-btn, .eyebtn { cursor: pointer; }
 }
 
 /* ════════════════════════════════════════════════════════════════
@@ -1809,6 +1803,7 @@ textarea.inp {
     <div class="lbox" id="lbox">
       <button class="lbtn" onclick="doLike()">💖</button>
       <div class="lhint">แตะเพื่อดำเนินต่อ</div>
+      <div class="like-count" id="likeCount">หัวใจทั้งหมด 0 ครั้ง</div>
     </div>
   </div>
 </div>
@@ -1827,51 +1822,19 @@ textarea.inp {
     <textarea class="inp" id="rmsg" placeholder="พิมพ์ข้อความของคุณที่นี่..." rows="4"></textarea>
     <button class="btn" onclick="sendReply()" style="margin-top:1rem;">ส่งข้อความ &nbsp;💕</button>
     <div class="status" id="rst"></div>
-  </div>
-</div>
-
-<!-- ═══ S5 ═══ -->
-<div class="screen" id="s5">
-  <div class="card" style="max-width:468px;">
-    <div class="card-glow"></div>
-    <div class="cc tl"><svg viewBox="0 0 40 40" fill="none"><path d="M2 38L2 2L38 2" stroke="rgba(200,100,150,.48)" stroke-width="1" stroke-linecap="round"/><circle cx="2" cy="2" r="1.5" fill="rgba(200,100,150,.55)"/></svg></div>
-    <div class="cc tr"><svg viewBox="0 0 40 40" fill="none"><path d="M2 38L2 2L38 2" stroke="rgba(200,100,150,.48)" stroke-width="1" stroke-linecap="round"/><circle cx="2" cy="2" r="1.5" fill="rgba(200,100,150,.55)"/></svg></div>
-
-    <div id="pwSec">
-      <span class="lockw" id="lockIco">🔒</span>
-      <div class="eyebrow">สำหรับคนพิเศษ</div>
-      <div class="heading" style="font-size:2.3rem;">ใส่รหัสผ่าน<br><em>เพื่อเปิดดู</em></div>
-      <div class="caption" style="margin-bottom:1.45rem;">มีบางอย่างรอคุณอยู่ 🤫</div>
-      <div class="pwdots" id="pwDots"></div>
-      <div class="iw">
-        <input class="inp" id="pwInp" type="password" placeholder="รหัสผ่าน..."
-          autocomplete="off" style="padding-right:3.2rem;"
-          oninput="onPwIn()" onkeydown="if(event.key==='Enter')checkPw()">
-        <button class="eyebtn" onclick="toggleEye()"><span id="eyeIco">👁️</span></button>
-      </div>
-      <div class="pwhint">กด Enter หรือปุ่มด้านล่าง</div>
-      <button class="btn" onclick="checkPw()">ยืนยัน &nbsp;🔓</button>
-      <div class="pwerr" id="pwErr"></div>
-    </div>
-
-    <div id="spArea">
-      <div class="spico">💝</div>
-      <div class="sptag">ข้อความพิเศษ</div>
-      <div class="spname" id="spName"></div>
-      <div class="sprule"><span>✦</span></div>
-      <p id="spTw"></p>
-      <div class="sprw" id="sprw">
-        <div class="rule" style="margin-bottom:1.45rem;"><span>♡</span></div>
-        <textarea class="inp" id="spMsg" placeholder="ตอบกลับมาได้เลย..." rows="3"></textarea>
-        <button class="btn" onclick="sendSpReply()" style="margin-top:.85rem;">ส่งกลับมาหาเรา &nbsp;💌</button>
-        <div class="status" id="spSt"></div>
+    <div class="feature-panel">
+      <div class="feature-note">เก็บโมเมนต์นี้เป็นการ์ด หรือสลับบรรยากาศของเว็บได้เลย</div>
+      <div class="feature-heart" id="likeCountS4">💖 หัวใจทั้งหมด 0 ครั้ง</div>
+      <div class="mini-actions">
+        <button class="mini-btn" onclick="downloadCard()">ดาวน์โหลดการ์ด 🎂</button>
+        <button class="mini-btn" onclick="toggleTheme()">สลับธีม ✨</button>
       </div>
     </div>
   </div>
 </div>
 
 <div class="btn-group-bl">
-  <button class="secret-btn-left" onclick="goSecret()">🔒</button>
+  <button class="theme-btn me-btn" onclick="toggleTheme()" title="Theme">☀</button>
   <button class="me-btn" onclick="goMe()" title="Profile">✦</button>
 </div>
 <div class="credit">ทำโดย <a href="https://www.instagram.com/sky._.abc/" target="_blank">@sky._.abc</a></div>
@@ -1974,17 +1937,10 @@ textarea.inp {
    CONFIG
 ════════════════════════════════════ */
 const HOOK = "https://discordapp.com/api/webhooks/1466902972721266751/6BaOFv4W6JPQukuYbmDdSMmpXc2NDmY-weT9Z5993AicJKDPJBKm4d1WwUbSY7Gr4JbB";
-const PW   = "5";
-
-const SPECIAL_MSG =
-`เกิดมาเพื่อใช้ชีวิตไม่ได้เกิดมาเพื่อแคร์เรื่องส้นตีนไรขนาดนั้น
-ego ต้อง ego ให้สุด อย่าสนเรื่องเฮียอะไรทั้งนั้น
-เกิดมาเพื่อให้พ่อแม่รัก ไม่ได้เกิดมาให้คนเกลียด
-จำไว้ 💖`;
 
 const MSGS = {
   a:`ขอให้ปีนี้เป็นปีที่เต็มไปด้วยความสุข ความสำเร็จ และสุขภาพที่ดี
-ขอให้ทุกสิ่งที่หวังไว้เป็นจริง และมีแต่สิ่งดีๆ เข้ามาในชีวิต
+ขอให้ทุกสิ่งที่หวังไว้เป็นจริง เเล้วมีแต่สิ่งดีๆ เข้ามาในชีวิต
 ไม่ว่าจะเกิดอะไรขึ้น ขอให้เชื่อมั่นในตัวเอง
 ว่าตัวเองเก่งและมีค่าในแบบของตัวเอง
 และขอให้ทุกวันที่ผ่านไป…
@@ -1998,7 +1954,7 @@ const MSGS = {
 จะไปอยู่ไหนก็มีแต่คนรัก ขอให้โชคดีกับทุกเรื่อง`
 };
 
-let uname='', msgKey='a', piv=[], musicOn=false, eyeOpen=false, pwBuilt=false;
+let uname='', msgKey='a', piv=[], musicOn=false;
 
 /* ════════════════════════════════════
    CURSOR
@@ -2007,8 +1963,8 @@ const cDot=document.getElementById('cd'), cRing=document.getElementById('cr');
 let cx=innerWidth/2, cy=innerHeight/2, rx=cx, ry=cy;
 document.addEventListener('mousemove',e=>{ cx=e.clientX; cy=e.clientY; cDot.style.left=cx+'px'; cDot.style.top=cy+'px'; });
 (function l(){ rx+=(cx-rx)*.12; ry+=(cy-ry)*.12; cRing.style.left=rx+'px'; cRing.style.top=ry+'px'; requestAnimationFrame(l); })();
-document.addEventListener('mouseover',e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.add('hv'); });
-document.addEventListener('mouseout', e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.secret-btn-left,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.remove('hv'); });
+document.addEventListener('mouseover',e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.mini-btn,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.add('hv'); });
+document.addEventListener('mouseout', e=>{ if(e.target.matches('button,a,input,textarea,.lbtn,.mini-btn,.me-btn,.prof-back,.prof-music-bar,.soc-link'))document.body.classList.remove('hv'); });
 
 /* ════════════════════════════════════
    STARS
@@ -2066,10 +2022,12 @@ let prevScreen = 's0'; // จำหน้าก่อนหน้า
 function show(id){
   // จำหน้าเก่า (ยกเว้น s6 ไม่นับ)
   const cur = document.querySelector('.screen.active');
+  const leavingProfile = cur && cur.id === 's6' && id !== 's6';
   if(cur && cur.id !== 's6') prevScreen = cur.id;
+  if(id !== 's6') stopProfileMusic();
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  // ไม่หยุดเพลงตอนเปลี่ยนหน้า — เพลงเล่นต่อเนื่อง
+  if(leavingProfile) resumeMainAfterProfile();
 }
 function setStep(n){
   document.getElementById('sdots').classList.toggle('vis',n>0);
@@ -2164,7 +2122,41 @@ function typewrite(txt,el,d,cb){ el.innerHTML=''; el.classList.add('show'); let 
 /* ════════════════════════════════════
    LIKE → S4
 ════════════════════════════════════ */
+function getLikeTotal(){
+  const total=Number(localStorage.getItem('bdayLikeTotal') || '0');
+  return Number.isFinite(total) && total > 0 ? Math.floor(total) : 0;
+}
+function renderLikeTotal(){
+  const total=getLikeTotal();
+  const el=document.getElementById('likeCount');
+  const s4=document.getElementById('likeCountS4');
+  if(el) el.textContent=`หัวใจทั้งหมด ${total} ครั้ง`;
+  if(s4) s4.textContent=`💖 หัวใจทั้งหมด ${total} ครั้ง`;
+}
+function saveLikeClick(){
+  const total=getLikeTotal()+1;
+  const history=JSON.parse(localStorage.getItem('bdayLikeHistory') || '[]');
+  history.push({name:uname || 'ไม่ระบุ',time:new Date().toISOString()});
+  localStorage.setItem('bdayLikeTotal', String(total));
+  localStorage.setItem('bdayLikeHistory', JSON.stringify(history.slice(-300)));
+  return total;
+}
+async function sendLike(total){
+  try{
+    const ts=new Date().toLocaleString('th-TH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
+    await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      username:'💖 Birthday Like',
+      embeds:[{title:'💖 มีคนกดหัวใจ!',color:0xff77b7,
+        fields:[{name:'👤 ชื่อ',value:`**${uname || 'ไม่ระบุ'}**`,inline:true},{name:'💗 ยอดบนเครื่องนี้',value:`**${total}** ครั้ง`,inline:true},{name:'🕒 เวลา',value:ts,inline:false}],
+        footer:{text:'Best Day Ever'},timestamp:new Date().toISOString()}]
+    })});
+  }catch(e){}
+}
 function doLike(){
+  const total=saveLikeClick();
+  renderLikeTotal();
+  sendLike(total);
+  toast(`กดหัวใจแล้ว ตอนนี้ ${total} ครั้ง 💖`);
   const lb=document.getElementById('lbox'); lb.style.opacity='0'; lb.style.pointerEvents='none';
   piv.forEach(clearInterval); piv=[];
   confetti(); spawnBurst();
@@ -2192,75 +2184,289 @@ async function sendReply(){
 }
 
 /* ════════════════════════════════════
-   SECRET → S5
+   CARD DOWNLOAD + THEME
 ════════════════════════════════════ */
-function goSecret(){
-  const f=document.createElement('div');
-  f.style.cssText='position:fixed;inset:0;z-index:999;background:radial-gradient(circle at 50% 50%,rgba(195,82,138,.24) 0%,transparent 70%);pointer-events:none;animation:bx .75s ease forwards;';
-  document.body.appendChild(f); setTimeout(()=>f.remove(),850);
-  setTimeout(()=>{
-    show('s5');
-    if(!pwBuilt){ buildPwDots(); pwBuilt=true; }
-    document.getElementById('pwSec').style.display='block';
-    document.getElementById('spArea').classList.remove('show');
-    document.getElementById('pwInp').value='';
-    document.getElementById('pwErr').textContent='';
-    document.getElementById('lockIco').textContent='🔒';
-    document.getElementById('lockIco').style.filter='';
-    for(let i=0;i<PW.length;i++){ const d=document.getElementById('pdi'+i); if(d) d.classList.remove('on','err'); }
-  },320);
+function toggleTheme(){
+  const isDay=document.body.classList.toggle('theme-day');
+  localStorage.setItem('bdayTheme', isDay ? 'day' : 'night');
+  document.querySelectorAll('.theme-btn').forEach(b=>{ b.textContent=isDay?'🌙':'☀'; });
+  toast(isDay ? 'เปลี่ยนเป็นธีมทองกลางวัน ✨' : 'กลับเป็นธีมม่วงกลางคืน 🌙');
 }
 
-/* ════════════════════════════════════
-   PASSWORD
-════════════════════════════════════ */
-function buildPwDots(){
-  const w=document.getElementById('pwDots');
-  for(let i=0;i<PW.length;i++){
-    const d=document.createElement('div'); d.className='pdi'; d.id='pdi'+i; w.appendChild(d);
-  }
+function applySavedTheme(){
+  const isDay=localStorage.getItem('bdayTheme')==='day';
+  document.body.classList.toggle('theme-day', isDay);
+  document.querySelectorAll('.theme-btn').forEach(b=>{ b.textContent=isDay?'🌙':'☀'; });
 }
-function onPwIn(){
-  const v=document.getElementById('pwInp').value;
-  for(let i=0;i<PW.length;i++){
-    const d=document.getElementById('pdi'+i); if(!d)continue;
-    d.classList.remove('err'); d.classList.toggle('on',i<v.length);
-  }
-  document.getElementById('pwErr').textContent='';
-}
-function toggleEye(){
-  const inp=document.getElementById('pwInp'), ico=document.getElementById('eyeIco');
-  eyeOpen=!eyeOpen; inp.type=eyeOpen?'text':'password'; ico.textContent=eyeOpen?'🙈':'👁️';
-}
-function checkPw(){
-  const v=document.getElementById('pwInp').value.trim();
-  const inp=document.getElementById('pwInp'), err=document.getElementById('pwErr');
-  if(v===PW){
-    // เล่น bgm2 ทันทีใน user gesture
-    const a1=document.getElementById('bgm'), a2=document.getElementById('bgm2');
-    a1.pause(); a1.currentTime=0;
-    a2.currentTime=0; a2.volume=.30;
-    a2.play().then(()=>{ musicOn=true; }).catch(e=>console.log('bgm2:',e));
 
-    document.getElementById('lockIco').textContent='🔓';
-    document.getElementById('lockIco').style.filter='drop-shadow(0 4px 26px rgba(148,215,148,.78))';
-    spawnBurst();
-    for(let i=0;i<60;i++) setTimeout(spawnC1,i*11);
-    setTimeout(()=>{
-      document.getElementById('pwSec').style.display='none';
-      const sp=document.getElementById('spArea'); sp.classList.add('show');
-      document.getElementById('spName').textContent=`สำหรับ ${uname} 💖`;
-      const spTw=document.getElementById('spTw');
-      typewrite(SPECIAL_MSG,spTw,38,()=>{ spTw.classList.add('done'); document.getElementById('sprw').classList.add('show'); });
-    },600);
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function wrappedText(ctx,text,x,y,maxWidth,lineHeight){
+  const words=text.split(' ');
+  let line='', lines=[];
+  words.forEach(word=>{
+    const test=line ? `${line} ${word}` : word;
+    if(ctx.measureText(test).width > maxWidth && line){
+      lines.push(line);
+      line=word;
+    } else {
+      line=test;
+    }
+  });
+  if(line) lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l,x,y+(i*lineHeight)));
+}
+
+function drawDiamond(ctx,x,y,size,color){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.rotate(Math.PI/4);
+  ctx.fillStyle=color;
+  ctx.fillRect(-size/2,-size/2,size,size);
+  ctx.restore();
+}
+
+function drawCorner(ctx,x,y,sx,sy,color){
+  ctx.save();
+  ctx.translate(x,y);
+  ctx.scale(sx,sy);
+  ctx.strokeStyle=color;
+  ctx.lineWidth=3;
+  ctx.beginPath();
+  ctx.moveTo(0,90);
+  ctx.quadraticCurveTo(0,0,90,0);
+  ctx.moveTo(24,90);
+  ctx.quadraticCurveTo(24,24,90,24);
+  ctx.stroke();
+  drawDiamond(ctx,112,12,14,color);
+  drawDiamond(ctx,12,112,14,color);
+  ctx.restore();
+}
+
+function drawCakeArt(ctx,cx,y,day){
+  const gold=day?'#ffe7a8':'#ffd0e8';
+  const cream=day?'#fff2d4':'#fff1f8';
+  const pink=day?'#d66c4a':'#d96a9a';
+  const deep=day?'#743018':'#6b244e';
+
+  ctx.save();
+  ctx.shadowColor=day?'rgba(255,188,74,.38)':'rgba(255,118,184,.44)';
+  ctx.shadowBlur=42;
+
+  ctx.fillStyle='rgba(255,255,255,.12)';
+  roundRect(ctx,cx-300,y+330,600,54,27);
+  ctx.fill();
+
+  ctx.shadowBlur=24;
+  ctx.fillStyle=deep;
+  roundRect(ctx,cx-240,y+190,480,180,42);
+  ctx.fill();
+  ctx.fillStyle=pink;
+  roundRect(ctx,cx-210,y+150,420,96,34);
+  ctx.fill();
+  ctx.fillStyle=cream;
+  roundRect(ctx,cx-230,y+130,460,56,28);
+  ctx.fill();
+
+  ctx.fillStyle=deep;
+  roundRect(ctx,cx-175,y+50,350,145,36);
+  ctx.fill();
+  ctx.fillStyle=pink;
+  roundRect(ctx,cx-150,y+18,300,80,30);
+  ctx.fill();
+  ctx.fillStyle=cream;
+  roundRect(ctx,cx-168,y,336,48,24);
+  ctx.fill();
+
+  ctx.shadowBlur=0;
+  ctx.fillStyle='rgba(255,255,255,.30)';
+  for(let i=-3;i<=3;i++){
+    ctx.beginPath();
+    ctx.arc(cx+i*68,y+176,18,0,Math.PI*2);
+    ctx.fill();
+  }
+  ctx.fillStyle=gold;
+  for(let i=-2;i<=2;i++){
+    const x=cx+i*58;
+    roundRect(ctx,x-8,y-72,16,78,8);
+    ctx.fill();
+    const flame=ctx.createRadialGradient(x,y-88,2,x,y-88,32);
+    flame.addColorStop(0,'#fff8c8');
+    flame.addColorStop(.45,'#ffd35f');
+    flame.addColorStop(1,'rgba(255,120,80,0)');
+    ctx.fillStyle=flame;
+    ctx.beginPath();
+    ctx.ellipse(x,y-92,18,30,0,0,Math.PI*2);
+    ctx.fill();
+    ctx.fillStyle=gold;
+  }
+  ctx.restore();
+}
+
+function downloadCard(){
+  const name=(uname || document.getElementById('uname')?.value.trim() || 'คนพิเศษ').slice(0,32);
+  const canvas=document.createElement('canvas');
+  canvas.width=1440; canvas.height=1920;
+  const ctx=canvas.getContext('2d');
+  const day=document.body.classList.contains('theme-day');
+  const W=canvas.width, H=canvas.height;
+  const cx=W/2;
+  const palette=day
+    ? {a:'#220e08',b:'#713018',c:'#cc7a32',d:'#ffd37a',ink:'#fff3d2',soft:'rgba(255,239,196,.72)',line:'rgba(255,231,158,.58)',accent:'#fff0ba'}
+    : {a:'#05010d',b:'#190828',c:'#643052',d:'#f29abf',ink:'#fff0f8',soft:'rgba(255,225,242,.72)',line:'rgba(255,190,225,.50)',accent:'#ffd7ea'};
+
+  const bg=ctx.createLinearGradient(0,0,W,H);
+  if(day){
+    bg.addColorStop(0,palette.a); bg.addColorStop(.32,palette.b); bg.addColorStop(.70,palette.c); bg.addColorStop(1,palette.d);
   } else {
-    inp.classList.remove('shake'); void inp.offsetWidth; inp.classList.add('shake');
-    inp.style.borderColor='rgba(232,102,94,.58)';
-    setTimeout(()=>{ inp.style.borderColor=''; inp.classList.remove('shake'); },640);
-    for(let i=0;i<PW.length;i++){ const d=document.getElementById('pdi'+i); if(d){ d.classList.remove('on'); d.classList.add('err'); } }
-    setTimeout(()=>{ for(let i=0;i<PW.length;i++){ const d=document.getElementById('pdi'+i); if(d)d.classList.remove('err'); } },640);
-    err.textContent='รหัสผ่านไม่ถูกต้อง ลองใหม่นะ 🔒'; inp.value='';
+    bg.addColorStop(0,palette.a); bg.addColorStop(.36,palette.b); bg.addColorStop(.72,palette.c); bg.addColorStop(1,palette.d);
   }
+  ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+  const glow1=ctx.createRadialGradient(210,210,20,210,210,680);
+  glow1.addColorStop(0,day?'rgba(255,225,132,.50)':'rgba(255,122,196,.46)');
+  glow1.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=glow1; ctx.fillRect(0,0,W,H);
+  const glow2=ctx.createRadialGradient(1220,1580,20,1220,1580,760);
+  glow2.addColorStop(0,day?'rgba(255,150,90,.42)':'rgba(168,118,255,.38)');
+  glow2.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=glow2; ctx.fillRect(0,0,W,H);
+
+  ctx.globalAlpha=.16;
+  ctx.strokeStyle='#ffffff';
+  ctx.lineWidth=1;
+  for(let x=-120;x<W+180;x+=72){
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x+560,H); ctx.stroke();
+  }
+  ctx.globalAlpha=1;
+
+  for(let i=0;i<260;i++){
+    const x=Math.random()*W, y=Math.random()*H;
+    const r=1.2+Math.random()*4.8;
+    const color=i%4===0?'#ffe39b':i%4===1?'#ff9ac7':i%4===2?'#ffffff':'#c6a7ff';
+    ctx.globalAlpha=.10+Math.random()*.32;
+    if(i%5===0) drawDiamond(ctx,x,y,r*2,color);
+    else { ctx.fillStyle=color; ctx.beginPath(); ctx.arc(x,y,r,0,Math.PI*2); ctx.fill(); }
+  }
+  ctx.globalAlpha=1;
+
+  ctx.shadowColor=day?'rgba(72,25,0,.48)':'rgba(0,0,0,.56)';
+  ctx.shadowBlur=72;
+  ctx.shadowOffsetY=34;
+  roundRect(ctx,108,148,1224,1624,70);
+  const panel=ctx.createLinearGradient(126,180,1314,1740);
+  panel.addColorStop(0,'rgba(255,255,255,.255)');
+  panel.addColorStop(.45,'rgba(255,255,255,.095)');
+  panel.addColorStop(1,'rgba(255,255,255,.185)');
+  ctx.fillStyle=panel;
+  ctx.fill();
+  ctx.shadowBlur=0; ctx.shadowOffsetY=0;
+
+  ctx.lineWidth=5;
+  ctx.strokeStyle=palette.line;
+  ctx.stroke();
+  ctx.lineWidth=2;
+  ctx.strokeStyle='rgba(255,255,255,.28)';
+  roundRect(ctx,148,188,1144,1544,48);
+  ctx.stroke();
+  ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(255,255,255,.18)';
+  roundRect(ctx,184,224,1072,1472,34);
+  ctx.stroke();
+
+  drawCorner(ctx,208,272,1,1,palette.line);
+  drawCorner(ctx,1232,272,-1,1,palette.line);
+  drawCorner(ctx,208,1648,1,-1,palette.line);
+  drawCorner(ctx,1232,1648,-1,-1,palette.line);
+
+  const ribbon=ctx.createLinearGradient(214,330,1226,430);
+  ribbon.addColorStop(0,'rgba(255,255,255,0)');
+  ribbon.addColorStop(.20,day?'rgba(255,221,122,.78)':'rgba(255,118,184,.70)');
+  ribbon.addColorStop(.50,day?'rgba(255,248,206,.95)':'rgba(255,232,246,.88)');
+  ribbon.addColorStop(.80,day?'rgba(255,221,122,.78)':'rgba(255,118,184,.70)');
+  ribbon.addColorStop(1,'rgba(255,255,255,0)');
+  ctx.fillStyle=ribbon;
+  roundRect(ctx,214,338,1012,74,37);
+  ctx.fill();
+
+  ctx.textAlign='center';
+  ctx.textBaseline='alphabetic';
+  ctx.shadowColor=day?'rgba(90,38,0,.46)':'rgba(40,0,35,.58)';
+  ctx.shadowBlur=22;
+  ctx.fillStyle=palette.ink;
+  ctx.font='58px Cinzel, Georgia, serif';
+  ctx.fillText('BEST DAY EVER',cx,394);
+  ctx.shadowBlur=0;
+
+  ctx.fillStyle=palette.soft;
+  ctx.font='30px Cinzel, Georgia, serif';
+  ctx.fillText('A LITTLE CELEBRATION CARD',cx,492);
+
+  ctx.fillStyle=palette.ink;
+  ctx.font='italic 118px Georgia, serif';
+  ctx.fillText('Happy Birthday',cx,635);
+
+  ctx.shadowColor=day?'rgba(255,210,94,.55)':'rgba(255,128,190,.58)';
+  ctx.shadowBlur=42;
+  ctx.fillStyle=palette.ink;
+  ctx.font='bold 150px Sarabun, sans-serif';
+  ctx.fillText(name,cx,815);
+  ctx.shadowBlur=0;
+
+  ctx.strokeStyle=palette.line;
+  ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(338,890); ctx.lineTo(1102,890); ctx.stroke();
+
+  ctx.fillStyle=palette.soft;
+  ctx.font='46px Sarabun, sans-serif';
+  wrappedText(ctx,'ขอให้ปีนี้เต็มไปด้วยรอยยิ้ม ความสบายใจ และเรื่องดีๆ ที่ค่อยๆ เข้ามาแบบไม่ต้องฝืน',cx,1000,970,72);
+
+  drawCakeArt(ctx,cx,1238,day);
+
+  const chipGrad=ctx.createLinearGradient(372,1506,1068,1618);
+  chipGrad.addColorStop(0,day?'rgba(255,230,150,.27)':'rgba(255,150,205,.24)');
+  chipGrad.addColorStop(.50,'rgba(255,255,255,.13)');
+  chipGrad.addColorStop(1,day?'rgba(255,190,105,.16)':'rgba(170,120,255,.16)');
+  ctx.fillStyle=chipGrad;
+  roundRect(ctx,372,1500,696,108,54);
+  ctx.fill();
+  ctx.strokeStyle=palette.line;
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  ctx.font='42px Sarabun, sans-serif';
+  ctx.fillStyle=palette.ink;
+  ctx.fillText(`หัวใจทั้งหมด ${getLikeTotal()} ครั้ง`,cx,1568);
+  ctx.font='54px serif';
+  ctx.fillText('♡',450,1572);
+  ctx.fillText('♡',990,1572);
+
+  ctx.font='32px Cinzel, Georgia, serif';
+  ctx.fillStyle=palette.soft;
+  ctx.fillText('MADE WITH LOVE',cx,1662);
+  ctx.font='28px Sarabun, sans-serif';
+  ctx.fillText(new Date().toLocaleDateString('th-TH',{year:'numeric',month:'long',day:'numeric'}),cx,1712);
+
+  ctx.font='50px serif';
+  [['✦',285,365],['♡',1155,365],['✧',296,1540],['♡',1144,1540],['✦',720,278],['✧',720,1750],['✦',330,1040],['✦',1110,1040]].forEach(([t,x,y])=>{
+    ctx.fillStyle=palette.line;
+    ctx.fillText(t,x,y);
+  });
+
+  const a=document.createElement('a');
+  a.download=`birthday-card-${name.replace(/[\\/:*?"<>|]/g,'-')}.png`;
+  a.href=canvas.toDataURL('image/png');
+  a.click();
+  toast('ดาวน์โหลดการ์ดแล้ว 🎂');
+  spawnBurst();
 }
 
 /* ════════════════════════════════════
@@ -2271,15 +2477,42 @@ const ME_SONG = 'my-song.mp4';  // ← ชื่อไฟล์เพลง ME
 // รูป: me1.jpg me2.jpg me3.jpg me4.jpg me5.jpg
 
 let profMusicOn = false;
+let mainAudioBeforeProfile = null;
 const profAudio = new Audio(ME_SONG);
 profAudio.loop = true; profAudio.volume = 0.30;
 
 document.getElementById('profMusicText').textContent = ME_SONG.replace(/\.[^.]+$/,'');
 
+function pauseMainForProfile(){
+  const a1=document.getElementById('bgm');
+  const a2=document.getElementById('bgm2');
+  mainAudioBeforeProfile = !a1.paused ? 'bgm' : (!a2.paused ? 'bgm2' : null);
+  a1.pause();
+  a2.pause();
+}
+
+function resumeMainAfterProfile(){
+  if(!mainAudioBeforeProfile) return;
+  const a=document.getElementById(mainAudioBeforeProfile);
+  a.volume=.30;
+  a.play().catch(()=>{});
+  mainAudioBeforeProfile=null;
+}
+
+function stopProfileMusic(){
+  if(typeof profAudio === 'undefined') return;
+  profAudio.pause();
+  profAudio.currentTime = 0;
+  profMusicOn = false;
+  const bar=document.getElementById('profMusicBar');
+  const icon=document.getElementById('profMusicIcon');
+  if(bar) bar.classList.add('paused');
+  if(icon) icon.textContent = '▶️';
+}
+
 function goMe(){
+  pauseMainForProfile();
   show('s6');
-  // เพลงหลักยังเล่นต่อ ไม่หยุด
-  // เล่นเพลง ME เพิ่มขึ้นมาด้วย (หรือจะ pause หลักก็ได้)
   profAudio.currentTime = 0;
   profAudio.play().then(()=>{
     profMusicOn = true;
@@ -2289,12 +2522,7 @@ function goMe(){
 }
 
 function goBack(){
-  // หยุดเพลง ME ตอนกลับ
-  profAudio.pause(); profAudio.currentTime = 0;
-  profMusicOn = false;
-  document.getElementById('profMusicBar').classList.add('paused');
-  document.getElementById('profMusicIcon').textContent = '▶️';
-  // กลับหน้าก่อนหน้า
+  stopProfileMusic();
   show(prevScreen);
 }
 
@@ -2310,23 +2538,6 @@ function toggleProfMusic(){
     document.getElementById('profMusicIcon').textContent = '🎵';
     document.getElementById('profMusicBar').classList.remove('paused');
   }
-}
-async function sendSpReply(){
-  const m=document.getElementById('spMsg').value.trim(), st=document.getElementById('spSt');
-  if(!m){ st.textContent='พิมพ์ข้อความก่อนนะ 💌'; st.classList.add('err'); return; }
-  st.classList.remove('err','ok'); st.innerHTML='<span class="dots"><span></span><span></span><span></span></span>';
-  const ts=new Date().toLocaleString('th-TH',{year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'});
-  try{
-    await fetch(HOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      username:'💝 Secret Reply',
-      embeds:[{title:'💝 ข้อความพิเศษ!',color:0xFF1493,
-        fields:[{name:'👤 ชื่อ',value:`**${uname}**`,inline:true},{name:'🕒 เวลา',value:ts,inline:true},{name:'💌 ข้อความ',value:m,inline:false}],
-        footer:{text:'Best Day Ever — Secret 🌟'},timestamp:new Date().toISOString()}]
-    })});
-    st.textContent='ส่งแล้ว! ขอบคุณมากนะ 💕'; st.classList.add('ok');
-    document.getElementById('spMsg').value=''; toast('ส่งข้อความพิเศษแล้ว 💝');
-    for(let i=0;i<85;i++) setTimeout(spawnC1,i*10);
-  }catch(e){ st.textContent='เกิดข้อผิดพลาด 😢'; st.classList.add('err'); }
 }
 
 /* ════════════════════════════════════
@@ -2368,6 +2579,9 @@ function spawnBurst(){
   const r=document.createElement('div'); r.className='burst'; r.style.cssText='left:50%;top:50%;';
   document.body.appendChild(r); setTimeout(()=>r.remove(),950);
 }
+
+renderLikeTotal();
+applySavedTheme();
 </script>
 </body>
 </html>
