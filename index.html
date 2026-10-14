@@ -19,10 +19,34 @@
   }
   #heart {
     position: absolute; inset: 0;
-    transform: rotateY(-14deg);          /* เอียงนิด ๆ ให้ดูมีมิติเหมือนในรูป */
     transition: opacity 1.5s ease;
   }
   #heart.gone { opacity: 0; }
+
+  /* หัวใจเต็มแล้ว → มีคำ I love you ลอยขึ้นจากทุกคำเรื่อย ๆ แต่หัวใจอยู่กับที่
+     (ใช้ 2 ชั้น ::before / ::after สลับกันให้ลอยถี่ ๆ) */
+  .word::before, .word::after {
+    content: attr(data-t);
+    position: absolute; left: 0; top: 0;
+    opacity: 0;
+    color: #ffa3cc;
+    text-shadow: 0 0 6px #ffc2dc, 0 0 14px #ff4d9a, 0 0 26px #ff2d85;
+  }
+  #heart.rise .word::before,
+  #heart.rise .word::after {
+    animation: rise 4s cubic-bezier(.25, .6, .4, 1) infinite backwards;
+    animation-delay: var(--rd);
+  }
+  #heart.rise .word::after { animation-delay: calc(var(--rd) + 2s); }
+  @keyframes rise {
+    0%   { transform: translateY(0)      scale(1);    opacity: 0; }
+    20%  { opacity: .95; }
+    60%  { opacity: .55; }
+    100% { transform: translateY(-4.5em) scale(1.08); opacity: 0; }
+  }
+
+  /* ประกายเล็ก ๆ ลอยขึ้นช้า ๆ ด้านหลัง */
+  #sparkle { position: fixed; inset: 0; pointer-events: none; }
 
   .word {
     position: absolute;
@@ -32,9 +56,11 @@
     text-shadow: 0 0 4px #ffc2dc, 0 0 10px #ff4d9a, 0 0 20px #ff2d85;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity .35s linear;
+    transition: opacity .8s ease;
     pointer-events: none;
   }
+  .word.show { opacity: 1; }
+  .word .t { transition: opacity .35s linear; }
 
   /* ข้อความตอนจบ */
   #final {
@@ -82,6 +108,7 @@
 </head>
 <body>
 
+<canvas id="sparkle"></canvas>
 <div id="stage"><div id="heart"></div></div>
 <div id="final"></div>
 <div id="gate"><div class="big">❤</div><div>กดไอ้สัตว์</div></div>
@@ -122,7 +149,7 @@
     timers = [];
     clearInterval(spin);
     heart.innerHTML = '';
-    heart.classList.remove('gone');
+    heart.classList.remove('gone', 'rise');
     finalEl.innerHTML = '';
     finalEl.classList.remove('gone');
 
@@ -137,7 +164,11 @@
       const p = heartPoint(Math.PI + (i / WORDS) * Math.PI * 2);
       const el = document.createElement('span');
       el.className = 'word';
-      el.textContent = TEXT;
+      el.innerHTML = '<span class="t"></span>';
+      el.firstChild.textContent = TEXT;
+      el.dataset.t = TEXT;
+      // เริ่มลอยทีละคำแบบค่อย ๆ ไล่กันไป ไม่โผล่พร้อมกันทีเดียว
+      el.style.setProperty('--rd', (i / WORDS * 2 + Math.random() * 1.5).toFixed(2) + 's');
       el.style.left = cx + p.x * scale + 'px';
       el.style.top = cy + p.y * scale + 'px';
       el.style.fontSize = size + 'px';
@@ -150,7 +181,8 @@
       words.forEach((el, i) => {
         if (i >= shown) return;
         const behind = ((head - i) % WORDS + WORDS) % WORDS / WORDS;
-        el.style.opacity = Math.max(MIN_LIGHT, 1 - behind / TRAIL).toFixed(2);
+        el.classList.add('show');
+        el.firstChild.style.opacity = Math.max(MIN_LIGHT, 1 - behind / TRAIL).toFixed(2);
       });
     }
 
@@ -162,6 +194,7 @@
     later(() => {
       let head = WORDS - 1;
       spin = setInterval(() => light(++head, WORDS), STEP_MS);
+      heart.classList.add('rise');
     }, t);
 
     // 3) ค้างไว้ ~10 วิ แล้วหายไป
@@ -195,6 +228,38 @@
   });
 
   // ===== เพลง: เล่นเองอัตโนมัติจากไฟล์ song.mp3 / song.mp4 / song.m4a ในโฟลเดอร์เดียวกัน =====
+  // ===== ประกายชมพูลอยขึ้นช้า ๆ =====
+  (function sparkles() {
+    const cv = document.getElementById('sparkle');
+    const ctx = cv.getContext('2d');
+    let dots = [];
+    function size() {
+      const dpr = devicePixelRatio || 1;
+      cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round(innerWidth * innerHeight / 14000);
+      dots = Array.from({ length: n }, () => ({
+        x: Math.random() * innerWidth, y: Math.random() * innerHeight,
+        r: Math.random() * 1.4 + 0.3, v: Math.random() * 0.25 + 0.05,
+        p: Math.random() * Math.PI * 2
+      }));
+    }
+    size();
+    addEventListener('resize', size);
+    (function frame() {
+      ctx.clearRect(0, 0, innerWidth, innerHeight);
+      for (const d of dots) {
+        d.y -= d.v; d.p += 0.02;
+        if (d.y < -5) { d.y = innerHeight + 5; d.x = Math.random() * innerWidth; }
+        ctx.globalAlpha = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(d.p));
+        ctx.fillStyle = '#ff8cc0';
+        ctx.shadowColor = '#ff3d8f'; ctx.shadowBlur = 6;
+        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    })();
+  })();
+
   const audio = document.getElementById('audio');
   const gate = document.getElementById('gate');
   audio.volume = 0.8;
