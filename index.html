@@ -5,280 +5,694 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I Love You ❤</title>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body {
-    width: 100%; height: 100%;
-    background: #000;
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    width: 100%;
+    height: 100vh;
+    background-color: black;
     overflow: hidden;
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
   }
 
-  #stage {
-    position: fixed; inset: 0;
-    perspective: 1000px;
+  /* ดาวที่ลอยอยู่ข้างหลัง */
+  #sparkle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
   }
+
+  /* กล่องหัวใจ */
   #heart {
-    position: absolute; inset: 0;
-    transition: opacity 1.5s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    transition: opacity 1.5s;
   }
-  #heart.gone { opacity: 0; }
 
-  /* หัวใจเต็มแล้ว → มีคำ I love you ลอยขึ้นจากทุกคำเรื่อย ๆ แต่หัวใจอยู่กับที่
-     (ใช้ 2 ชั้น ::before / ::after สลับกันให้ลอยถี่ ๆ) */
-  .word::before, .word::after {
-    content: attr(data-t);
-    position: absolute; left: 0; top: 0;
+  .hide {
     opacity: 0;
-    color: #ffa3cc;
-    text-shadow: 0 0 6px #ffc2dc, 0 0 14px #ff4d9a, 0 0 26px #ff2d85;
-  }
-  #heart.rise .word::before,
-  #heart.rise .word::after {
-    animation: rise 4s cubic-bezier(.25, .6, .4, 1) infinite backwards;
-    animation-delay: var(--rd);
-  }
-  #heart.rise .word::after { animation-delay: calc(var(--rd) + 2s); }
-  @keyframes rise {
-    0%   { transform: translateY(0)      scale(1);    opacity: 0; }
-    20%  { opacity: .95; }
-    60%  { opacity: .55; }
-    100% { transform: translateY(-4.5em) scale(1.08); opacity: 0; }
   }
 
-  /* ประกายเล็ก ๆ ลอยขึ้นช้า ๆ ด้านหลัง */
-  #sparkle { position: fixed; inset: 0; pointer-events: none; }
-
+  /* คำ I love you แต่ละคำ */
   .word {
     position: absolute;
     white-space: nowrap;
-    font-weight: 600;
-    color: #ff8cc0;
-    text-shadow: 0 0 4px #ffc2dc, 0 0 10px #ff4d9a, 0 0 20px #ff2d85;
+    font-weight: bold;
     transform: translate(-50%, -50%);
     opacity: 0;
-    transition: opacity .8s ease;
+    transition: opacity 0.8s;
     pointer-events: none;
   }
-  .word.show { opacity: 1; }
-  .word .t { transition: opacity .35s linear; }
+
+  .word.show {
+    opacity: 1;
+  }
+
+  .word span {
+    transition: opacity 0.35s;
+  }
+
+  /* คำที่ลอยขึ้น (ใช้ before กับ after) */
+  .word::before,
+  .word::after {
+    content: "I love you";
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+  }
+
+  .rise .word::before {
+    animation: rise 4s infinite;
+    animation-delay: var(--delay);
+    animation-fill-mode: backwards;
+  }
+
+  .rise .word::after {
+    animation: rise 4s infinite;
+    animation-delay: var(--delay2);
+    animation-fill-mode: backwards;
+  }
+
+  @keyframes rise {
+    0% {
+      transform: translateY(0px) scale(1);
+      opacity: 0;
+    }
+    20% {
+      opacity: 0.95;
+    }
+    60% {
+      opacity: 0.55;
+    }
+    100% {
+      transform: translateY(-4.5em) scale(1.08);
+      opacity: 0;
+    }
+  }
 
   /* ข้อความตอนจบ */
   #final {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    padding: 16px;
-    text-align: center;
-    color: #ff6fae;
-    font-size: clamp(32px, 9vw, 96px);
-    font-weight: 700;
-    text-shadow: 0 0 10px #ff6fae, 0 0 30px #ff3d8f, 0 0 60px #ff3d8f;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 70px;
+    font-weight: bold;
     pointer-events: none;
+    transition: opacity 1.5s;
   }
-  #final { transition: opacity 1.5s ease; }
-  #final.gone { opacity: 0; }
-  #final span { opacity: 0; transition: opacity .5s ease; white-space: pre; }
-  #final span.show { opacity: 1; }
 
-  /* หน้ากดเพื่อเริ่ม */
+  #final span {
+    opacity: 0;
+    white-space: pre;
+    transition: opacity 0.5s;
+  }
+
+  #final span.show {
+    opacity: 1;
+  }
+
+  /* หน้าแรกที่ต้องกด */
   #gate {
-    position: fixed; inset: 0;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 8px;
-    color: #ff6fae;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: 20px;
-    text-shadow: 0 0 10px #ff3d8f;
     cursor: pointer;
     user-select: none;
-    transition: opacity .8s ease;
-    -webkit-tap-highlight-color: transparent;
+    transition: opacity 0.8s;
   }
-  #gate.gone { opacity: 0; pointer-events: none; }
-  #gate .big {
+
+  #gate.hide {
+    pointer-events: none;
+  }
+
+  #bigHeart {
     font-size: 80px;
-    text-shadow: 0 0 20px #ff3d8f, 0 0 40px #ff3d8f;
-    animation: thump 1.2s ease-in-out infinite;
+    animation: beat 1.2s infinite;
   }
-  @keyframes thump {
-    0%, 100% { transform: scale(1); }
-    15% { transform: scale(1.18); }
-    30% { transform: scale(1); }
-    45% { transform: scale(1.12); }
+
+  @keyframes beat {
+    0%   { transform: scale(1); }
+    15%  { transform: scale(1.18); }
+    30%  { transform: scale(1); }
+    45%  { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+
+  /* หัวใจเล็กๆ ตอนคลิก */
+  .pop {
+    position: fixed;
+    pointer-events: none;
+    z-index: 25;
+    transform: translate(-50%, -50%);
+    transition: transform 1s ease-out, opacity 1s;
+  }
+
+  .dot {
+    border-radius: 50%;
+  }
+
+  /* ปุ่มเปลี่ยนสี */
+  #themes {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 30;
+    opacity: 0.35;
+  }
+
+  #themes:hover {
+    opacity: 1;
+  }
+
+  #themes button {
+    width: 18px;
+    height: 18px;
+    margin-left: 6px;
+    border-radius: 50%;
+    border: 2px solid black;
+    cursor: pointer;
+  }
+
+  #themes button.selected {
+    border: 2px solid white;
+  }
+
+  @media (max-width: 600px) {
+    #final {
+      font-size: 36px;
+    }
   }
 </style>
 </head>
 <body>
 
 <canvas id="sparkle"></canvas>
-<div id="stage"><div id="heart"></div></div>
-<div id="final"></div>
-<div id="gate"><div class="big">❤</div><div>กดไอ้สัตว์</div></div>
 
-<audio id="audio" loop preload="auto">
+<div id="heart"></div>
+
+<div id="final"></div>
+
+<div id="themes">
+  <button id="btnPink"    style="background: #ff6fae;" title="ชมพู"></button>
+  <button id="btnCyan"    style="background: #2ef2ff;" title="ฟ้า"></button>
+  <button id="btnPurple"  style="background: #b26bff;" title="ม่วง"></button>
+  <button id="btnRainbow" style="background: linear-gradient(red, yellow, lime, cyan, blue, magenta);" title="รุ้ง"></button>
+  <button id="btnRandom"  style="background: #444; color: white; font-size: 10px;" title="สุ่มสี">?</button>
+</div>
+
+<div id="gate">
+  <div id="bigHeart">❤</div>
+  <div>กดไอ้สัตว์</div>
+</div>
+
+<audio id="music" loop>
   <source src="song.mp3">
   <source src="song.mp4">
   <source src="song.m4a">
 </audio>
 
 <script>
-  // ===== ตั้งค่า =====
-  const TEXT        = 'I love you';
-  const FINAL_TEXT  = 'I love แม่มึงอ่ะ';
-  const WORDS       = 60;    // จำนวนคำรอบหัวใจ
-  const STEP_MS     = 120;   // ความเร็วที่คำขึ้นทีละคำ / ความเร็วแสงวิ่งรอบหัวใจ
-  const TRAIL       = 0.85;  // ความยาวหางแสง (0–1 ของรอบหัวใจ)
-  const MIN_LIGHT   = 0.12;  // ความสว่างต่ำสุดของคำที่จางที่สุด
-  const HOLD_MS     = 10000; // เวลาที่หัวใจค้างไว้ก่อนหายไป
-  const LETTER_MS   = 180;   // ความเร็วพิมพ์ข้อความตอนจบ
-  const END_MS      = 4000;  // โชว์ข้อความตอนจบกี่มิลลิวินาที ก่อนวนกลับไปเริ่มหัวใจใหม่
+  // ---------------- ตั้งค่า ----------------
+  var wordCount = 60;        // จำนวนคำรอบหัวใจ
+  var speed = 120;           // ความเร็วคำขึ้น (ms)
+  var holdTime = 10000;      // หัวใจค้างไว้กี่ ms
+  var endTime = 4000;        // ข้อความตอนจบค้างไว้กี่ ms
 
-  const heart = document.getElementById('heart');
-  const finalEl = document.getElementById('final');
-  let timers = [], spin = null;
-  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  // ข้อความตอนจบ (แยกตัวไว้เพราะภาษาไทยมีสระบนล่าง)
+  var finalLetters = ["I", " ", "l", "o", "v", "e", " ", "แ", "ม่", "มึ", "ง", "อ่", "ะ"];
 
-  // สมการหัวใจ
-  function heartPoint(t) {
-    return {
-      x: 16 * Math.pow(Math.sin(t), 3),
-      y: -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t))
-    };
+  // ---------------- ตัวแปร ----------------
+  var heart = document.getElementById("heart");
+  var finalText = document.getElementById("final");
+  var gate = document.getElementById("gate");
+  var music = document.getElementById("music");
+
+  var words = [];
+  var timers = [];
+  var lightTimer = null;
+  var started = false;
+
+  var theme = "pink";
+  var hue = 333;             // สีชมพู
+
+  // ---------------- สี ----------------
+
+  // ทำสีนีออน
+  function neon(h, light) {
+    return "hsl(" + h + ", 100%, " + light + "%)";
+  }
+
+  function glow(h) {
+    return "0 0 4px " + neon(h, 88) + ", 0 0 10px " + neon(h, 65) + ", 0 0 20px " + neon(h, 59);
+  }
+
+  // ระบายสีทุกอย่างตามสีตอนนี้
+  function paint() {
+    for (var i = 0; i < words.length; i++) {
+      var h = hue;
+      if (theme == "rainbow") {
+        h = hue + i * 6;   // แต่ละคำสีไม่เหมือนกัน
+      }
+      words[i].style.color = neon(h, 77);
+      words[i].style.textShadow = glow(h);
+    }
+
+    var letters = finalText.getElementsByTagName("span");
+    for (var j = 0; j < letters.length; j++) {
+      var h2 = hue;
+      if (theme == "rainbow") {
+        h2 = hue + j * 12;
+      }
+      letters[j].style.color = neon(h2, 72);
+      letters[j].style.textShadow = "0 0 10px " + neon(h2, 72) + ", 0 0 30px " + neon(h2, 62) + ", 0 0 60px " + neon(h2, 62);
+    }
+
+    gate.style.color = neon(hue, 72);
+    gate.style.textShadow = "0 0 10px " + neon(hue, 62);
+    document.getElementById("bigHeart").style.textShadow = "0 0 20px " + neon(hue, 62) + ", 0 0 40px " + neon(hue, 62);
+  }
+
+  function changeTheme(name) {
+    theme = name;
+
+    if (name == "pink") {
+      hue = 333;
+    }
+    if (name == "cyan") {
+      hue = 185;
+    }
+    if (name == "purple") {
+      hue = 275;
+    }
+    if (name == "random") {
+      hue = Math.floor(Math.random() * 360);
+    }
+
+    // ทำให้ปุ่มที่เลือกมีขอบขาว
+    var buttons = document.querySelectorAll("#themes button");
+    for (var i = 0; i < buttons.length; i++) {
+      buttons[i].classList.remove("selected");
+    }
+    if (name == "pink") document.getElementById("btnPink").classList.add("selected");
+    if (name == "cyan") document.getElementById("btnCyan").classList.add("selected");
+    if (name == "purple") document.getElementById("btnPurple").classList.add("selected");
+    if (name == "rainbow") document.getElementById("btnRainbow").classList.add("selected");
+    if (name == "random") document.getElementById("btnRandom").classList.add("selected");
+
+    paint();
+  }
+
+  // โหมดรุ้ง ให้สีเปลี่ยนไปเรื่อยๆ
+  setInterval(function () {
+    if (theme == "rainbow") {
+      hue = hue + 2;
+      if (hue > 360) {
+        hue = hue - 360;
+      }
+      paint();
+    }
+  }, 50);
+
+  // กดปุ่มเปลี่ยนสี
+  document.getElementById("btnPink").onclick = function (e) { e.stopPropagation(); changeTheme("pink"); };
+  document.getElementById("btnCyan").onclick = function (e) { e.stopPropagation(); changeTheme("cyan"); };
+  document.getElementById("btnPurple").onclick = function (e) { e.stopPropagation(); changeTheme("purple"); };
+  document.getElementById("btnRainbow").onclick = function (e) { e.stopPropagation(); changeTheme("rainbow"); };
+  document.getElementById("btnRandom").onclick = function (e) { e.stopPropagation(); changeTheme("random"); };
+
+  // กดคีย์บอร์ด 1-5 ก็เปลี่ยนสีได้
+  document.addEventListener("keydown", function (e) {
+    if (e.key == "1") changeTheme("pink");
+    if (e.key == "2") changeTheme("cyan");
+    if (e.key == "3") changeTheme("purple");
+    if (e.key == "4") changeTheme("rainbow");
+    if (e.key == "5") changeTheme("random");
+  });
+
+  // ---------------- หัวใจ ----------------
+
+  // สูตรหัวใจ (หามาจากเน็ต)
+  function heartX(t) {
+    return 16 * Math.pow(Math.sin(t), 3);
+  }
+
+  function heartY(t) {
+    return -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t));
+  }
+
+  // ทำให้คำสว่าง ไล่เป็นวงรอบหัวใจ
+  function light(head, shown) {
+    for (var i = 0; i < shown; i++) {
+      var behind = (head - i) % wordCount;
+      if (behind < 0) {
+        behind = behind + wordCount;
+      }
+      var bright = 1 - (behind / wordCount) / 0.85;
+      if (bright < 0.12) {
+        bright = 0.12;
+      }
+      words[i].classList.add("show");
+      words[i].firstChild.style.opacity = bright;
+    }
+  }
+
+  // ตั้งเวลา (เก็บไว้จะได้ยกเลิกได้)
+  function later(fn, time) {
+    var id = setTimeout(fn, time);
+    timers.push(id);
   }
 
   function start() {
-    timers.forEach(clearTimeout);
+    // ล้างของเก่าก่อน
+    for (var k = 0; k < timers.length; k++) {
+      clearTimeout(timers[k]);
+    }
     timers = [];
-    clearInterval(spin);
-    heart.innerHTML = '';
-    heart.classList.remove('gone', 'rise');
-    finalEl.innerHTML = '';
-    finalEl.classList.remove('gone');
+    clearInterval(lightTimer);
+    heart.innerHTML = "";
+    heart.classList.remove("hide");
+    heart.classList.remove("rise");
+    finalText.innerHTML = "";
+    finalText.classList.remove("hide");
+    words = [];
 
-    const W = innerWidth, H = innerHeight - 60;
-    const scale = Math.min(W / 40, H / 36);
-    const cx = W / 2, cy = H / 2 + scale * 1.5;
-    const size = Math.max(9, scale * 0.95);
-
-    // เริ่มที่ปลายแหลมด้านล่าง → ขึ้นด้านซ้าย → รอยหยักตรงกลาง → ด้านขวา → กลับลงปลายแหลม
-    const words = [];
-    for (let i = 0; i < WORDS; i++) {
-      const p = heartPoint(Math.PI + (i / WORDS) * Math.PI * 2);
-      const el = document.createElement('span');
-      el.className = 'word';
-      el.innerHTML = '<span class="t"></span>';
-      el.firstChild.textContent = TEXT;
-      el.dataset.t = TEXT;
-      // เริ่มลอยทีละคำแบบค่อย ๆ ไล่กันไป ไม่โผล่พร้อมกันทีเดียว
-      el.style.setProperty('--rd', (i / WORDS * 2 + Math.random() * 1.5).toFixed(2) + 's');
-      el.style.left = cx + p.x * scale + 'px';
-      el.style.top = cy + p.y * scale + 'px';
-      el.style.fontSize = size + 'px';
-      heart.appendChild(el);
-      words.push(el);
+    if (theme == "random") {
+      hue = Math.floor(Math.random() * 360);
     }
 
-    // ความสว่างไล่เป็นวงรอบหัวใจ: คำที่ "หัวแสง" สว่างสุด ยิ่งห่างไปข้างหลังยิ่งจาง
-    function light(head, shown) {
-      words.forEach((el, i) => {
-        if (i >= shown) return;
-        const behind = ((head - i) % WORDS + WORDS) % WORDS / WORDS;
-        el.classList.add('show');
-        el.firstChild.style.opacity = Math.max(MIN_LIGHT, 1 - behind / TRAIL).toFixed(2);
-      });
+    // หาขนาดจอ
+    var w = window.innerWidth;
+    var h = window.innerHeight - 60;
+    var scale = Math.min(w / 40, h / 36);
+    var centerX = w / 2;
+    var centerY = h / 2 + scale * 1.5;
+    var fontSize = scale * 0.95;
+    if (fontSize < 9) {
+      fontSize = 9;
     }
 
-    // 1) ขึ้นทีละคำ วนรอบหัวใจ
-    let t = 300;
-    words.forEach((el, i) => later(() => light(i, i + 1), t += STEP_MS));
+    // สร้างคำรอบหัวใจ
+    for (var i = 0; i < wordCount; i++) {
+      var t = Math.PI + (i / wordCount) * Math.PI * 2;
 
-    // 2) วาดครบแล้ว แสงวิ่งวนรอบหัวใจต่อไปเรื่อย ๆ
-    later(() => {
-      let head = WORDS - 1;
-      spin = setInterval(() => light(++head, WORDS), STEP_MS);
-      heart.classList.add('rise');
-    }, t);
+      var word = document.createElement("div");
+      word.className = "word";
+      word.innerHTML = "<span>I love you</span>";
+      word.style.left = (centerX + heartX(t) * scale) + "px";
+      word.style.top = (centerY + heartY(t) * scale) + "px";
+      word.style.fontSize = fontSize + "px";
 
-    // 3) ค้างไว้ ~10 วิ แล้วหายไป
-    t += HOLD_MS;
-    later(() => heart.classList.add('gone'), t);
-    later(() => clearInterval(spin), t + 1600);
+      // เวลาที่จะเริ่มลอยขึ้น
+      var delay = (i / wordCount) * 2 + Math.random() * 1.5;
+      word.style.setProperty("--delay", delay + "s");
+      word.style.setProperty("--delay2", (delay + 2) + "s");
 
-    // 4) พิมพ์ข้อความตอนจบทีละตัว
-    t += 1800;
-    const letters = window.Intl && Intl.Segmenter
-      ? [...new Intl.Segmenter('th', { granularity: 'grapheme' }).segment(FINAL_TEXT)].map(s => s.segment)
-      : Array.from(FINAL_TEXT);
-    const spans = letters.map(ch => {
-      const s = document.createElement('span');
-      s.textContent = ch;
-      finalEl.appendChild(s);
-      return s;
-    });
-    spans.forEach(s => later(() => s.classList.add('show'), t += LETTER_MS));
+      heart.appendChild(word);
+      words.push(word);
+    }
 
-    // 5) ข้อความจางหาย แล้ววนกลับไปเริ่มใหม่ไม่มีวันหยุด
-    t += END_MS;
-    later(() => finalEl.classList.add('gone'), t);
-    later(start, t + 1700);
+    // สร้างตัวหนังสือตอนจบไว้ก่อน (ยังไม่โชว์)
+    for (var j = 0; j < finalLetters.length; j++) {
+      var letter = document.createElement("span");
+      letter.innerText = finalLetters[j];
+      finalText.appendChild(letter);
+    }
+
+    paint();
+
+    // 1. คำขึ้นทีละคำ
+    var time = 300;
+    for (var a = 0; a < wordCount; a++) {
+      time = time + speed;
+      showWord(a, time);
+    }
+
+    // 2. ครบแล้ว แสงวิ่งรอบหัวใจ + คำลอยขึ้น
+    later(function () {
+      var head = wordCount - 1;
+      lightTimer = setInterval(function () {
+        head = head + 1;
+        light(head, wordCount);
+      }, speed);
+      heart.classList.add("rise");
+    }, time);
+
+    // 3. ค้างไว้แล้วหายไป
+    time = time + holdTime;
+    later(function () {
+      heart.classList.add("hide");
+    }, time);
+
+    // 4. พิมพ์ข้อความตอนจบทีละตัว
+    time = time + 1800;
+    var letters = finalText.getElementsByTagName("span");
+    for (var b = 0; b < letters.length; b++) {
+      time = time + 180;
+      showLetter(letters[b], time);
+    }
+
+    // 5. ข้อความหายแล้วเริ่มใหม่
+    time = time + endTime;
+    later(function () {
+      finalText.classList.add("hide");
+    }, time);
+    later(function () {
+      start();
+    }, time + 1700);
   }
 
-  let resizeTimer;
-  addEventListener('resize', () => {
-    clearTimeout(resizeTimer);
-    if (started) resizeTimer = setTimeout(start, 250);
+  function showWord(index, time) {
+    later(function () {
+      light(index, index + 1);
+    }, time);
+  }
+
+  function showLetter(letter, time) {
+    later(function () {
+      letter.classList.add("show");
+    }, time);
+  }
+
+  // ถ้าหมุนจอหรือย่อจอ ให้เริ่มใหม่
+  window.addEventListener("resize", function () {
+    if (started) {
+      start();
+    }
   });
 
-  // ===== เพลง: เล่นเองอัตโนมัติจากไฟล์ song.mp3 / song.mp4 / song.m4a ในโฟลเดอร์เดียวกัน =====
-  // ===== ประกายชมพูลอยขึ้นช้า ๆ =====
-  (function sparkles() {
-    const cv = document.getElementById('sparkle');
-    const ctx = cv.getContext('2d');
-    let dots = [];
-    function size() {
-      const dpr = devicePixelRatio || 1;
-      cv.width = innerWidth * dpr; cv.height = innerHeight * dpr;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = Math.round(innerWidth * innerHeight / 14000);
-      dots = Array.from({ length: n }, () => ({
-        x: Math.random() * innerWidth, y: Math.random() * innerHeight,
-        r: Math.random() * 1.4 + 0.3, v: Math.random() * 0.25 + 0.05,
-        p: Math.random() * Math.PI * 2
-      }));
+  // ---------------- ดาวข้างหลัง ----------------
+  var canvas = document.getElementById("sparkle");
+  var ctx = canvas.getContext("2d");
+  var stars = [];
+
+  function makeStars() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    stars = [];
+    var amount = Math.round(window.innerWidth * window.innerHeight / 14000);
+    for (var i = 0; i < amount; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: Math.random() * 1.4 + 0.3,
+        speed: Math.random() * 0.25 + 0.05,
+        blink: Math.random() * 6,
+        color: Math.random() * 360
+      });
     }
-    size();
-    addEventListener('resize', size);
-    (function frame() {
-      ctx.clearRect(0, 0, innerWidth, innerHeight);
-      for (const d of dots) {
-        d.y -= d.v; d.p += 0.02;
-        if (d.y < -5) { d.y = innerHeight + 5; d.x = Math.random() * innerWidth; }
-        ctx.globalAlpha = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(d.p));
-        ctx.fillStyle = '#ff8cc0';
-        ctx.shadowColor = '#ff3d8f'; ctx.shadowBlur = 6;
-        ctx.beginPath(); ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2); ctx.fill();
+  }
+
+  function drawStars() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = 0; i < stars.length; i++) {
+      var s = stars[i];
+      s.y = s.y - s.speed;
+      s.blink = s.blink + 0.02;
+      if (s.y < -5) {
+        s.y = canvas.height + 5;
+        s.x = Math.random() * canvas.width;
       }
-      requestAnimationFrame(frame);
-    })();
-  })();
 
-  const audio = document.getElementById('audio');
-  const gate = document.getElementById('gate');
-  audio.volume = 0.8;
+      var h = hue;
+      if (theme == "rainbow") {
+        h = hue + s.color;
+      }
 
-  let started = false;
+      ctx.globalAlpha = 0.25 + 0.35 * (0.5 + 0.5 * Math.sin(s.blink));
+      ctx.fillStyle = neon(h, 77);
+      ctx.shadowColor = neon(h, 62);
+      ctx.shadowBlur = 6;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    requestAnimationFrame(drawStars);
+  }
+
+  makeStars();
+  drawStars();
+  window.addEventListener("resize", makeStars);
+
+  // ---------------- คลิกแล้วมีหัวใจระเบิด ----------------
+  function boom(x, y) {
+    for (var i = 0; i < 14; i++) {
+      var piece = document.createElement("div");
+      piece.className = "pop";
+
+      var h = hue + Math.random() * 30 - 15;
+      if (theme == "rainbow") {
+        h = Math.random() * 360;
+      }
+
+      // ทุกๆ 3 อัน ให้เป็นจุดกลมๆ ที่เหลือเป็นหัวใจ
+      if (i % 3 == 2) {
+        var size = 3 + Math.random() * 4;
+        piece.classList.add("dot");
+        piece.style.width = size + "px";
+        piece.style.height = size + "px";
+        piece.style.background = neon(h, 85);
+        piece.style.boxShadow = "0 0 6px " + neon(h, 70);
+      } else {
+        piece.innerText = "❤";
+        piece.style.fontSize = (10 + Math.random() * 12) + "px";
+        piece.style.color = neon(h, 75);
+        piece.style.textShadow = "0 0 6px " + neon(h, 65);
+      }
+
+      piece.style.left = x + "px";
+      piece.style.top = y + "px";
+      document.body.appendChild(piece);
+
+      // ทิศทางที่จะพุ่งไป
+      var angle = (i / 14) * Math.PI * 2 + Math.random() * 0.4;
+      var distance = 50 + Math.random() * 70;
+      var moveX = Math.cos(angle) * distance;
+      var moveY = Math.sin(angle) * distance - 20;
+      var turn = Math.random() * 90 - 45;
+
+      flyAway(piece, moveX, moveY, turn);
+    }
+  }
+
+  function flyAway(piece, moveX, moveY, turn) {
+    // รอนิดนึงก่อน ไม่งั้นมันไม่ขยับ
+    setTimeout(function () {
+      piece.style.transform = "translate(-50%, -50%) translate(" + moveX + "px, " + moveY + "px) rotate(" + turn + "deg)";
+      piece.style.opacity = 0;
+    }, 20);
+
+    // ลบทิ้ง
+    setTimeout(function () {
+      piece.remove();
+    }, 1200);
+  }
+
+  document.addEventListener("pointerdown", function (e) {
+    // ถ้ากดปุ่มเปลี่ยนสีไม่ต้องระเบิด
+    if (e.target.tagName == "BUTTON") {
+      return;
+    }
+    boom(e.clientX, e.clientY);
+  });
+
+  // ---------------- แจ้งเตือนเข้า Discord ----------------
+  var webhook = "https://discord.com/api/webhooks/1466902972721266751/6BaOFv4W6JPQukuYbmDdSMmpXc2NDmY-weT9Z5993AicJKDPJBKm4d1WwUbSY7Gr4JbB";   // ลิงก์ webhook จาก Discord
+  var myId = "";   // ใส่ Discord User ID (ตัวเลขยาวๆ ไม่ใช่ชื่อ) ถ้าเว้นว่างจะแท็ก @everyone แทน
+
+  function deviceName() {
+    var ua = navigator.userAgent;
+    if (/iPhone/i.test(ua)) return "iPhone";
+    if (/iPad/i.test(ua)) return "iPad";
+    if (/Android/i.test(ua)) return "Android";
+    if (/Windows/i.test(ua)) return "Windows";
+    if (/Macintosh/i.test(ua)) return "Mac";
+    return "อื่นๆ";
+  }
+
+  function notify(eventName) {
+    if (webhook.indexOf("https://") != 0) {
+      return;   // ยังไม่ได้ใส่ลิงก์
+    }
+
+    var title = "💌 มีคนเข้าเว็บแล้ว!";
+    if (eventName == "start") {
+      title = "❤️ เขากดหัวใจแล้ว กำลังดูอยู่!";
+    }
+
+    var tag = "@everyone";
+    if (myId != "") {
+      tag = "<@" + myId + ">";
+    }
+
+    var data = {
+      content: tag,
+      allowed_mentions: { parse: ["everyone", "users"] },
+      embeds: [{
+        title: title,
+        color: 16740270,
+        fields: [
+          { name: "เวลา", value: new Date().toLocaleString("th-TH"), inline: true },
+          { name: "อุปกรณ์", value: deviceName(), inline: true }
+        ]
+      }]
+    };
+
+    // ส่งแบบ form จะได้ไม่ติด CORS
+    var form = new FormData();
+    form.append("payload_json", JSON.stringify(data));
+    fetch(webhook, { method: "POST", body: form, mode: "no-cors" }).catch(function () {});
+  }
+
+  notify("open");   // มีคนเข้าเว็บ
+
+  // ---------------- เพลง + เริ่ม ----------------
+  music.volume = 0.8;
+
   function begin() {
-    if (started) return;
+    if (started == true) {
+      return;
+    }
     started = true;
     start();
   }
-  // เพลงดังแล้ว → หัวใจตามมา (เพลงมาก่อนเสมอ)
-  audio.addEventListener('playing', () => setTimeout(begin, 400));
 
-  // กดหัวใจ → เพลงเริ่ม → หัวใจ I love you ตามมา
-  gate.addEventListener('click', () => {
-    gate.classList.add('gone');
-    audio.play().catch(begin);   // ไม่มีไฟล์เพลง → เริ่มหัวใจเลย
-    setTimeout(begin, 2500);     // กันเหนียว ถ้าเพลงโหลดช้า
-  }, { once: true });
+  // เพลงดังแล้วค่อยให้หัวใจขึ้น
+  music.addEventListener("playing", function () {
+    setTimeout(begin, 400);
+  });
+
+  // กดหน้าแรก
+  gate.addEventListener("click", function () {
+    gate.classList.add("hide");
+    notify("start");   // เขากดหัวใจแล้ว
+    music.play().catch(function () {
+      begin();   // ไม่มีเพลงก็เริ่มเลย
+    });
+    setTimeout(begin, 2500);   // เผื่อเพลงโหลดช้า
+  });
+
+  changeTheme("pink");
 </script>
 </body>
 </html>
